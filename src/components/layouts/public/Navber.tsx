@@ -1,7 +1,7 @@
 "use client";
 
 import Logo from "@/assets/svg/Logo";
-import { useGetMe } from "@/components/hooks/auth.hook";
+import { useGetMe, useLogout } from "@/components/hooks/auth.hook";
 import { UserRole } from "@/components/types";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
@@ -26,38 +26,38 @@ export default function Navbar() {
   };
 
   const { data, isLoading } = useGetMe();
-  // const { mutate: logout } = useLogout();
-
-  console.log(data);
+  const { mutate: logout } = useLogout();
 
   const queryClient = useQueryClient();
 
-  const role = data?.data?.role;
+  const role = data?.data?.role as UserRole | undefined;
+
+  console.log(data?.data);
   console.log(role);
 
-  // const handleLogout = () => {
-  //   logout(undefined, {
-  //     onSuccess: () => {
-  //       toast.add({
-  //         title: "Logout Successful",
-  //         description: "You have been logged out successfully.",
-  //         type: "success",
-  //       });
+  const handleLogout = () => {
+    logout(undefined, {
+      onSuccess: () => {
+        toast.add({
+          title: "Logout Successful",
+          description: "You have been logged out successfully.",
+          type: "success",
+        });
 
-  //       queryClient.removeQueries({
-  //         queryKey: ["user"],
-  //       });
-  //     },
+        queryClient.removeQueries({
+          queryKey: ["user"],
+        });
+      },
 
-  //     onError: () => {
-  //       toast.add({
-  //         title: "Logout Failed",
-  //         description: "Something went wrong. Please try again.",
-  //         type: "error",
-  //       });
-  //     },
-  //   });
-  // };
+      onError: () => {
+        toast.add({
+          title: "Logout Failed",
+          description: "Something went wrong. Please try again.",
+          type: "error",
+        });
+      },
+    });
+  };
 
   return (
     <header className="h-16 w-full border-b">
@@ -79,7 +79,7 @@ export default function Navbar() {
               {route.name}
             </Link>
           ))}
-{/* 
+
           {role && (
             <Link
               href={dashboardRoute[role]}
@@ -87,7 +87,7 @@ export default function Navbar() {
             >
               Dashboard
             </Link>
-          )} */}
+          )}
         </nav>
 
         {/* Authentication */}
@@ -102,11 +102,11 @@ export default function Navbar() {
             </Button>
           )}
 
-          {/* {!isLoading && data && (
-            <Button variant="destructive" onClick={handleLogout}>
+          {!isLoading && data && (
+            <Button className="cursor-pointer" variant="destructive" onClick={handleLogout}>
               Logout
             </Button>
-          )} */}
+          )}
         </div>
       </div>
     </header>
