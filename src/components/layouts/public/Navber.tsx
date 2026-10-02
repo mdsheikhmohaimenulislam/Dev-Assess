@@ -28,9 +28,12 @@ export default function Navbar() {
   const { data, isLoading } = useGetMe();
   // const { mutate: logout } = useLogout();
 
+  console.log(data);
+
   const queryClient = useQueryClient();
 
   const role = data?.data?.role;
+  console.log(role);
 
   // const handleLogout = () => {
   //   logout(undefined, {
