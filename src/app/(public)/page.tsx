@@ -1,7 +1,11 @@
-import React from 'react'
+import Navbar from "@/components/layouts/public/Navber";
+import React from "react";
 
 export default function Homepage() {
   return (
-    <div>page</div>
-  )
+    <>
+      {/* <Navbar /> */}
+      <div>page</div>
+    </>
+  );
 }
