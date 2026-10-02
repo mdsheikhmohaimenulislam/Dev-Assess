@@ -25,11 +25,11 @@ export default function LoginPage() {
       </div>
 
       <div className="relative hidden bg-muted lg:block">
-        {/* <img
+        <img
           src="/login.webp"
           alt="Code Assess login"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        /> */}
+        />
       </div>
     </div>
   );
