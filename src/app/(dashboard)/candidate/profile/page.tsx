@@ -2,6 +2,7 @@
 
 import { CalendarDays, Mail, ShieldCheck, UserRound } from "lucide-react";
 import { useGetMe } from "@/components/hooks/auth.hook";
+import Image from "next/image";
 
 export default function Profile() {
   const { data, isLoading, isError } = useGetMe();
@@ -63,15 +64,17 @@ export default function Profile() {
             <div className="flex flex-col items-center gap-5 sm:flex-row">
               {/* Profile Image */}
               <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200">
-                {profile.imageUrl ? (
-                  <img
-                    src={profile.imageUrl}
-                    alt={profile.name}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <UserRound className="h-10 w-10 text-gray-500" />
-                )}
+{profile?.imageUrl ? (
+  <Image
+    src={profile.imageUrl}
+    alt={profile.name || "Profile"}
+    width={40}
+    height={40}
+    className="h-25 w-25 rounded-full object-cover"
+  />
+) : (
+  <UserRound className="h-10 w-10 text-gray-500" />
+)}
               </div>
 
               {/* Basic Info */}

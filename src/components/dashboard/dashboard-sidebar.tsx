@@ -19,6 +19,7 @@ import { SidebarItems } from "@/components/types/sidebar.type";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { adminRoutes, candidateRoutes, companyRoutes } from "../routes";
+import Logout from "../layouts/public/Logout";
 
 const sidebarRoutes: Partial<Record<UserRole, SidebarItems>> = {
   ADMIN: adminRoutes,
@@ -61,8 +62,9 @@ export function DashboardSidebar({ role }: { role: UserRole }) {
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
+        
       </SidebarContent>
-
+<Logout/>
       <SidebarRail />
     </Sidebar>
   );

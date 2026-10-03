@@ -8,6 +8,11 @@ export const candidateRoutes = [
         title: "Dashboard",
         url: `${prefix}/dashboard`,
       },
+    ],
+  },
+  {
+    title: "Assessment",
+    items: [
       {
         title: "Assessments",
         url: `${prefix}/assessments`,
@@ -16,18 +21,18 @@ export const candidateRoutes = [
         title: "My Attempts",
         url: `${prefix}/attempts`,
       },
+      {
+        title: "Results",
+        url: `${prefix}/results`,
+      },
     ],
   },
   {
-    title: "Learning",
+    title: "Practice",
     items: [
       {
         title: "Problems",
         url: `${prefix}/problems`,
-      },
-      {
-        title: "Results",
-        url: `${prefix}/results`,
       },
     ],
   },

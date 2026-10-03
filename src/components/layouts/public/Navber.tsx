@@ -8,6 +8,7 @@ import { toast } from "@/components/ui/toast";
 
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
+import Logout from "./Logout";
 
 export default function Navbar() {
   const routes = [
@@ -26,37 +27,8 @@ export default function Navbar() {
   };
 
   const { data, isLoading } = useGetMe();
-  const { mutate: logout } = useLogout();
-
-  const queryClient = useQueryClient();
 
   const role = data?.data?.role as UserRole | undefined;
-
-console.log(data?.data);
-
-  const handleLogout = () => {
-    logout(undefined, {
-      onSuccess: () => {
-        toast.add({
-          title: "Logout Successful",
-          description: "You have been logged out successfully.",
-          type: "success",
-        });
-
-        queryClient.removeQueries({
-          queryKey: ["user"],
-        });
-      },
-
-      onError: () => {
-        toast.add({
-          title: "Logout Failed",
-          description: "Something went wrong. Please try again.",
-          type: "error",
-        });
-      },
-    });
-  };
 
   return (
     <header className="h-16 w-full border-b">
@@ -101,19 +73,13 @@ console.log(data?.data);
             </Button>
           )}
 
-{isLoading ? (
-  <Button variant="outline" disabled>
-    Loading...
-  </Button>
-) : data ? (
-  <Button
-    className="cursor-pointer"
-    variant="destructive"
-    onClick={handleLogout}
-  >
-    Logout
-  </Button>
-) : null}
+          {isLoading ? (
+            <Button variant="outline" disabled>
+              Loading...
+            </Button>
+          ) : data ? (
+            <Logout />
+          ) : null}
         </div>
       </div>
     </header>
