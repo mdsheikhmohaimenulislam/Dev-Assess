@@ -12,7 +12,7 @@ import Logout from "./Logout";
 
 export default function Navbar() {
   const routes = [
-    { name: "Home", url: "/" },
+
     { name: "Assessments", url: "/assessments" },
     { name: "Problems", url: "/problems" },
     { name: "Companies", url: "/companies" },
