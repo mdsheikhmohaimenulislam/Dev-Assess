@@ -1,4 +1,4 @@
-import {  ProblemFormValues } from "@/components/types";
+import {  ProblemFormValues, ProblemQueryParams, ProblemsResponse } from "@/components/types";
 import apiClient from "@/lib/apiClient";
 
 
@@ -7,4 +7,11 @@ import apiClient from "@/lib/apiClient";
 
 export function ICreateProblem(payload: ProblemFormValues) {
   return apiClient("/problem", { method: "POST", body: payload });
+}
+
+export function getProblems(params: ProblemQueryParams) {
+  return apiClient<ProblemsResponse>("/problem", {
+    method: "GET",
+    query: params,
+  });
 }
