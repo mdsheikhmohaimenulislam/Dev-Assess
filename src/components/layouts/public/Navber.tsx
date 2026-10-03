@@ -102,11 +102,19 @@ export default function Navbar() {
             </Button>
           )}
 
-          {!isLoading && data && (
-            <Button className="cursor-pointer" variant="destructive" onClick={handleLogout}>
-              Logout
-            </Button>
-          )}
+{isLoading ? (
+  <Button variant="outline" disabled>
+    Loading...
+  </Button>
+) : data ? (
+  <Button
+    className="cursor-pointer"
+    variant="destructive"
+    onClick={handleLogout}
+  >
+    Logout
+  </Button>
+) : null}
         </div>
       </div>
     </header>

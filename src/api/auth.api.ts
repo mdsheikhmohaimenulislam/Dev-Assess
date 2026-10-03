@@ -1,4 +1,4 @@
-import { forgotPasswordPayload, LoginPayload, resetPasswordPayload } from "@/components/types";
+import { forgotPasswordPayload, LoginPayload, RegistrationPayload, resetPasswordPayload, VerifyAccountPayload } from "@/components/types";
 import apiClient from "@/lib/apiClient";
 
 export function userLogin(payload: LoginPayload) {
@@ -25,10 +25,10 @@ export function googleOAuth(payload: { idToken: string }) {
   return apiClient("/auth/google", { method: "POST", body: payload });
 }
 
-// export function verifyAccount(payload: VerifyAccountPayload) {
-//   return apiClient("/auth/verify-email", { method: "POST", body: payload });
-// }
+export function verifyAccount(payload: VerifyAccountPayload) {
+  return apiClient("/auth/verify-email", { method: "POST", body: payload });
+}
 
-// export function userRegistration(payload: RegistrationPayload) {
-//   return apiClient("/auth/register", { method: "POST", body: payload });
-// }
+export function userRegistration(payload: RegistrationPayload) {
+  return apiClient("/auth/register", { method: "POST", body: payload });
+}

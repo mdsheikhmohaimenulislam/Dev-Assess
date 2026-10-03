@@ -5,9 +5,19 @@ export interface LoginPayload {
   password: string;
 }
 
+export type RegistrationPayload = {
+  name: string;
+  email: string;
+  password: string;
+};
+
 export interface resetPasswordPayload {
   email: string;
   newPassword: string;
+  otp: string;
+}
+export interface VerifyAccountPayload {
+  email: string;
   otp: string;
 }
 

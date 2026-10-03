@@ -2,15 +2,14 @@
 
 import Loading from "@/app/loading";
 import Logo from "@/assets/svg/Logo";
-import LoginForm from "@/components/forms/login-form";
-import { useGetMe } from "@/components/hooks/auth.hook";
+import RegisterForm from "@/components/forms/register-form";
 
+import { useGetMe } from "@/components/hooks/auth.hook";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
 import { useEffect } from "react";
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter();
 
   const { data, isPending } = useGetMe();
@@ -54,16 +53,16 @@ export default function LoginPage() {
         </div>
 
         <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-xs">
-            <LoginForm />
+          <div className="w-full max-w-md">
+            <RegisterForm />
           </div>
         </div>
       </div>
 
       <div className="relative hidden bg-muted lg:block">
         <img
-          src="/login.webp"
-          alt="Code Assess login"
+          src="/register.webp"
+          alt="Code Assess register"
           className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
         />
       </div>
