@@ -4,10 +4,7 @@ import {
   useRegistration,
   useVerifyAccount,
 } from "@/components/hooks/auth.hook";
-import {
-  RegistrationPayload,
-  VerifyAccountPayload,
-} from "@/components/types";
+import { RegistrationPayload, VerifyAccountPayload } from "@/components/types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,21 +40,15 @@ export default function RegisterForm() {
     },
   });
 
-  const { mutate: registerUser, isPending: isRegistering } =
-    useRegistration();
+  const { mutate: registerUser, isPending: isRegistering } = useRegistration();
 
-  const { mutate: verifyUser, isPending: isVerifying } =
-    useVerifyAccount();
+  const { mutate: verifyUser, isPending: isVerifying } = useVerifyAccount();
 
   // Restore OTP modal after page reload
   useEffect(() => {
-    const verificationPending = sessionStorage.getItem(
-      "verificationPending",
-    );
+    const verificationPending = sessionStorage.getItem("verificationPending");
 
-    const verificationEmail = sessionStorage.getItem(
-      "verificationEmail",
-    );
+    const verificationEmail = sessionStorage.getItem("verificationEmail");
 
     if (verificationPending === "true" && verificationEmail) {
       setRegisteredEmail(verificationEmail);
@@ -102,9 +93,7 @@ export default function RegisterForm() {
   const handleVerify = (data: VerifyAccountPayload) => {
     verifyUser(data, {
       onSuccess: (response) => {
-        toast.success(
-          response.message || "Email verified successfully!",
-        );
+        toast.success(response.message || "Email verified successfully!");
 
         // Clear verification state
         sessionStorage.removeItem("verificationPending");
@@ -136,10 +125,7 @@ export default function RegisterForm() {
         </div>
 
         {/* Registration Form */}
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-4"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           {/* Name */}
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
@@ -191,9 +177,7 @@ export default function RegisterForm() {
 
               <button
                 type="button"
-                onClick={() =>
-                  setShowPassword((prev) => !prev)
-                }
+                onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-foreground"
               >
                 {showPassword ? (
@@ -212,14 +196,8 @@ export default function RegisterForm() {
           </div>
 
           {/* Submit */}
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={isRegistering}
-          >
-            {isRegistering
-              ? "Creating account..."
-              : "Create account"}
+          <Button type="submit" className="w-full" disabled={isRegistering}>
+            {isRegistering ? "Creating account..." : "Create account"}
           </Button>
         </form>
 
@@ -241,17 +219,13 @@ export default function RegisterForm() {
           <div className="w-full max-w-md rounded-lg bg-background p-6 shadow-lg">
             {/* Modal Header */}
             <div className="space-y-2 text-center">
-              <h2 className="text-xl font-semibold">
-                Verify your email
-              </h2>
+              <h2 className="text-xl font-semibold">Verify your email</h2>
 
               <p className="text-sm text-muted-foreground">
                 We sent a verification code to
               </p>
 
-              <p className="text-sm font-medium">
-                {registeredEmail}
-              </p>
+              <p className="text-sm font-medium">{registeredEmail}</p>
             </div>
 
             {/* OTP Form */}
@@ -260,9 +234,7 @@ export default function RegisterForm() {
               className="mt-6 space-y-4"
             >
               <div className="space-y-2">
-                <Label htmlFor="otp">
-                  Verification OTP
-                </Label>
+                <Label htmlFor="otp">Verification OTP</Label>
 
                 <Input
                   id="otp"
@@ -280,14 +252,8 @@ export default function RegisterForm() {
                 )}
               </div>
 
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={isVerifying}
-              >
-                {isVerifying
-                  ? "Verifying..."
-                  : "Verify Account"}
+              <Button type="submit" className="w-full" disabled={isVerifying}>
+                {isVerifying ? "Verifying..." : "Verify Account"}
               </Button>
             </form>
           </div>

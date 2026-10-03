@@ -1,8 +1,6 @@
 import {
   getMe,
-
   googleLogin,
-
   passwordForgot,
   passwordReset,
   userLogin,
@@ -58,6 +56,6 @@ export function usePasswordReset() {
   });
 }
 
-
-
-export function useGoogleLogin() { return useMutation({ mutationFn: googleLogin, }); }
+export function useGoogleLogin() {
+  return useMutation({ mutationFn: googleLogin });
+}
