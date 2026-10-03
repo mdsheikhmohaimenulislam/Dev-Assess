@@ -27,8 +27,6 @@ export function passwordReset(payload: resetPasswordPayload) {
   return apiClient("/auth/reset-password", { method: "POST", body: payload });
 }
 
-
-
 export function verifyAccount(payload: VerifyAccountPayload) {
   return apiClient("/auth/verify-email", { method: "POST", body: payload });
 }
@@ -36,12 +34,6 @@ export function verifyAccount(payload: VerifyAccountPayload) {
 export function userRegistration(payload: RegistrationPayload) {
   return apiClient("/auth/register", { method: "POST", body: payload });
 }
-
-
-
-
-
-
 
 export const googleLogin = async (idToken: string) => {
   return apiClient("/auth/google", {
@@ -51,4 +43,3 @@ export const googleLogin = async (idToken: string) => {
     },
   });
 };
-

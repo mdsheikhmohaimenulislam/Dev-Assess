@@ -2,10 +2,11 @@ import { useLogout } from "@/components/hooks/auth.hook";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import { useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export default function Logout() {
   const { mutate: logout } = useLogout();
-
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   const handleLogout = () => {
@@ -20,6 +21,9 @@ export default function Logout() {
         queryClient.removeQueries({
           queryKey: ["user"],
         });
+
+        router.replace("/login");
+        router.refresh();
       },
 
       onError: () => {
