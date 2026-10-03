@@ -24,6 +24,10 @@ export const adminRoutes = [
         title: "Problems",
         url: `${prefix}/problems`,
       },
+      {
+        title: "Create Problems",
+        url: `${prefix}/createProblems`,
+      },
     ],
   },
   {
