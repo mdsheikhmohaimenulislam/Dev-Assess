@@ -32,8 +32,7 @@ export default function Navbar() {
 
   const role = data?.data?.role as UserRole | undefined;
 
-  console.log(data?.data);
-  console.log(role);
+console.log(data?.data);
 
   const handleLogout = () => {
     logout(undefined, {

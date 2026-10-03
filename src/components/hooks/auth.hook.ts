@@ -1,6 +1,8 @@
 import {
   getMe,
-  googleOAuth,
+
+  googleLogin,
+
   passwordForgot,
   passwordReset,
   userLogin,
@@ -34,11 +36,7 @@ export function useLogout() {
   });
 }
 
-export function useGoogleOAuth() {
-  return useMutation({
-    mutationFn: googleOAuth,
-  });
-}
+// export function useGoogleLlogin() { return useMutation({ mutationFn: googleLogin, }); }
 
 export function useGetMe() {
   return useQuery({
@@ -59,3 +57,7 @@ export function usePasswordReset() {
     mutationFn: passwordReset,
   });
 }
+
+
+
+export function useGoogleLogin() { return useMutation({ mutationFn: googleLogin, }); }

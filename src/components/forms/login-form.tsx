@@ -24,6 +24,7 @@ import {
 import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 import { toast } from "../ui/toast";
+import GoogleAuthButton from "../auth/google-auth-button";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -233,9 +234,7 @@ export default function LoginForm() {
             <FieldSeparator>Or continue with</FieldSeparator>
 
             {/* Google Login */}
-            <Button type="button" variant="outline" className="w-full">
-              Continue with Google
-            </Button>
+  <GoogleAuthButton />
           </FieldGroup>
         </form>
 
