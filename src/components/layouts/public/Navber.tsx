@@ -31,7 +31,7 @@ export default function Navbar() {
   const role = data?.data?.role as UserRole | undefined;
 
   return (
-    <header className="h-16 w-full border-b">
+    <header className="h-16 w-full border-b sticky top-0 z-50 bg-background">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
