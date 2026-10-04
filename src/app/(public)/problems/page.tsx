@@ -63,6 +63,9 @@ export default function ProblemsPage() {
   // Problems
   const problems = data?.data ?? [];
 
+
+
+
   // Pagination meta
   const meta = data?.meta;
 
@@ -214,13 +217,15 @@ export default function ProblemsPage() {
                         </div>
 
                         {/* Details */}
-                        <div className="border-t pt-4">
-                          <Button size="sm" className="w-full">
-                            <Link href={`/problems/${problem.id}`}>
-                              Details
-                            </Link>
-                          </Button>
-                        </div>
+
+<div className="border-t pt-4">
+  <Button size="sm" className="w-full">
+    <Link href={`/problems/${problem.id}`}>
+      Details
+    </Link>
+  </Button>
+</div>
+
                       </CardContent>
                     </Card>
                   ))}

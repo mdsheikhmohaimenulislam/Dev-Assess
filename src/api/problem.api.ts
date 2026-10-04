@@ -1,4 +1,4 @@
-import {  ProblemFormValues, ProblemQueryParams, ProblemsResponse } from "@/components/types";
+import {  ProblemFormValues, ProblemQueryParams, ProblemsResponse, SingleProblemResponse } from "@/components/types";
 import apiClient from "@/lib/apiClient";
 
 
@@ -14,4 +14,9 @@ export function getProblems(params: ProblemQueryParams) {
     method: "GET",
     query: params,
   });
+}
+
+
+export function getSingleProblem(id: string) {
+  return apiClient<SingleProblemResponse>(`/problem/${id}`);
 }

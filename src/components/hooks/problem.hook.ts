@@ -1,4 +1,4 @@
-import { getProblems, ICreateProblem } from "@/api/problem.api";
+import { getProblems, getSingleProblem, ICreateProblem } from "@/api/problem.api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ProblemQueryParams } from "../types";
 
@@ -16,5 +16,14 @@ export function useProblems(params: ProblemQueryParams) {
     queryFn: () => getProblems(params),
     placeholderData: (previousData) => previousData,
     retry: false,
+  });
+}
+
+
+export function useGetSingleProblem(id: string) {
+  return useQuery({
+    queryKey: ["problem", id],
+    queryFn: () => getSingleProblem(id),
+    enabled: Boolean(id),
   });
 }

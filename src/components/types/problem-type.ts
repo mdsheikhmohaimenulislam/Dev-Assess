@@ -63,3 +63,9 @@ export interface ProblemQueryParams {
 }
 
 
+export interface SingleProblemResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: Problem;
+}
