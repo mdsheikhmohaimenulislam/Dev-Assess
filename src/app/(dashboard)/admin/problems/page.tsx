@@ -1,7 +1,6 @@
-import React from 'react'
+import ProblemManagementTable from "../../_components/problem/ProblemManagementTable";
 
-export default function page() {
-  return (
-    <div>page</div>
-  )
+
+export default function AdminProblemsPage() {
+  return <ProblemManagementTable basePath="/admin/problems"  />;
 }
