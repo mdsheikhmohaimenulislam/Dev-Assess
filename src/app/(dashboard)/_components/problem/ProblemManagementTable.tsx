@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -7,12 +6,7 @@ import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -23,7 +17,12 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useGetAllProblems } from "@/components/hooks/problem.hook";
+import {
+  useDeleteProblem,
+  useGetAllProblems,
+} from "@/components/hooks/problem.hook";
+import { toast } from "@/components/ui/toast";
+import { success } from "zod";
 
 interface Problem {
   id: string;
@@ -40,15 +39,16 @@ interface Problem {
 }
 
 interface ProblemManagementTableProps {
-  basePath: "/admin/problems" | "/company/problems";
+  basePath: "/admin/problem" | "/company/problem";
 }
 
 export default function ProblemManagementTable({
   basePath,
 }: ProblemManagementTableProps) {
-  const [selectedProblem, setSelectedProblem] = useState<Problem | null>(
-    null,
-  );
+  const [selectedProblem, setSelectedProblem] = useState<Problem | null>(null);
+
+  const { mutate: deleteProblemMutation, isPending: isDeleting } =
+    useDeleteProblem();
 
   const [isEditOpen, setIsEditOpen] = useState(false);
 
@@ -105,7 +105,20 @@ export default function ProblemManagementTable({
   };
 
   const handleDelete = (id: string) => {
-    console.log("Delete problem:", id);
+    deleteProblemMutation(id, {
+      onSuccess: () => {
+        toast.add({
+          type: "success",
+          description: "Problem deleted successfully!",
+        });
+      },
+      onError: () => {
+        toast.add({
+          type: "error",
+          description: "Failed to delete problem",
+        });
+      },
+    });
   };
 
   return (
@@ -156,90 +169,73 @@ export default function ProblemManagementTable({
                   </tr>
                 </thead>
 
+                <tbody>
+                  {problems.map((problem: Problem, index: number) => (
+                    <tr key={problem.id} className="border-b last:border-0">
+                      <td className="px-4 py-4">{index + 1}</td>
 
-<tbody>
-  {problems.map((problem: Problem, index: number) => (
-    <tr
-      key={problem.id}
-      className="border-b last:border-0"
-    >
-      <td className="px-4 py-4">
-        {index + 1}
-      </td>
+                      <td className="px-4 py-4">
+                        <p className="font-medium">{problem.title}</p>
 
-      <td className="px-4 py-4">
-        <p className="font-medium">
-          {problem.title}
-        </p>
+                        <p className="mt-1 max-w-50 truncate text-xs text-muted-foreground">
+                          {problem.id}
+                        </p>
+                      </td>
 
-        <p className="mt-1 max-w-50 truncate text-xs text-muted-foreground">
-          {problem.id}
-        </p>
-      </td>
+                      <td className="px-4 py-4">{problem.category}</td>
 
-      <td className="px-4 py-4">
-        {problem.category}
-      </td>
+                      <td className="px-4 py-4">
+                        <Badge
+                          variant={
+                            problem.difficulty === "EASY"
+                              ? "secondary"
+                              : problem.difficulty === "MEDIUM"
+                                ? "outline"
+                                : "destructive"
+                          }
+                        >
+                          {problem.difficulty}
+                        </Badge>
+                      </td>
 
-      <td className="px-4 py-4">
-        <Badge
-          variant={
-            problem.difficulty === "EASY"
-              ? "secondary"
-              : problem.difficulty === "MEDIUM"
-                ? "outline"
-                : "destructive"
-          }
-        >
-          {problem.difficulty}
-        </Badge>
-      </td>
+                      <td className="px-4 py-4">
+                        <Badge variant="outline">{problem.type}</Badge>
+                      </td>
 
-      <td className="px-4 py-4">
-        <Badge variant="outline">
-          {problem.type}
-        </Badge>
-      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex justify-end gap-2">
+                          {/* View */}
+                          <Button size="icon" variant="outline" title="View">
+                            <Link href={`${basePath}/${problem.id}`}>
+                              <Eye />
+                            </Link>
+                          </Button>
 
-      <td className="px-4 py-4">
-        <div className="flex justify-end gap-2">
-          {/* View */}
-          <Button
-   
-            size="icon"
-            variant="outline"
-            title="View"
-          >
-            <Link href={`${basePath}/${problem.id}`}>
-              <Eye />
-            </Link>
-          </Button>
+                          {/* Edit */}
+                          <Button
+                            size="icon"
+                            variant="outline"
+                            title="Edit"
+                            onClick={() => handleEdit(problem)}
+                          >
+                            <Pencil />
+                          </Button>
 
-          {/* Edit */}
-          <Button
-            size="icon"
-            variant="outline"
-            title="Edit"
-            onClick={() => handleEdit(problem)}
-          >
-            <Pencil />
-          </Button>
-
-          {/* Delete */}
-          <Button
-            size="icon"
-            variant="destructive"
-            title="Delete"
-            onClick={() => handleDelete(problem.id)}
-          >
-            <Trash2 />
-          </Button>
-        </div>
-      </td>
-    </tr>
-  ))}
-</tbody>
-
+                          {/* Delete */}
+                          <Button
+                            size="icon"
+                            variant="destructive"
+                            title="Delete"
+                            disabled={isDeleting}
+                            onClick={() => handleDelete(problem.id)}
+                          >
+                            <Trash2 />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           </CardContent>
@@ -259,10 +255,7 @@ export default function ProblemManagementTable({
             <div className="grid gap-5 py-4">
               {/* Title */}
               <div className="space-y-2">
-                <label
-                  htmlFor="title"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="title" className="text-sm font-medium">
                   Title
                 </label>
 
@@ -280,10 +273,7 @@ export default function ProblemManagementTable({
 
               {/* Category */}
               <div className="space-y-2">
-                <label
-                  htmlFor="category"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="category" className="text-sm font-medium">
                   Category
                 </label>
 
@@ -301,10 +291,7 @@ export default function ProblemManagementTable({
 
               {/* Difficulty */}
               <div className="space-y-2">
-                <label
-                  htmlFor="difficulty"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="difficulty" className="text-sm font-medium">
                   Difficulty
                 </label>
 
@@ -330,10 +317,7 @@ export default function ProblemManagementTable({
 
               {/* Description */}
               <div className="space-y-2">
-                <label
-                  htmlFor="description"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="description" className="text-sm font-medium">
                   Description
                 </label>
 
@@ -352,10 +336,7 @@ export default function ProblemManagementTable({
 
               {/* Input Format */}
               <div className="space-y-2">
-                <label
-                  htmlFor="inputFormat"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="inputFormat" className="text-sm font-medium">
                   Input Format
                 </label>
 
@@ -373,10 +354,7 @@ export default function ProblemManagementTable({
 
               {/* Output Format */}
               <div className="space-y-2">
-                <label
-                  htmlFor="outputFormat"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="outputFormat" className="text-sm font-medium">
                   Output Format
                 </label>
 
@@ -394,10 +372,7 @@ export default function ProblemManagementTable({
 
               {/* Constraints */}
               <div className="space-y-2">
-                <label
-                  htmlFor="constraints"
-                  className="text-sm font-medium"
-                >
+                <label htmlFor="constraints" className="text-sm font-medium">
                   Constraints
                 </label>
 
@@ -416,10 +391,7 @@ export default function ProblemManagementTable({
               {/* Time + Memory */}
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <label
-                    htmlFor="timeLimit"
-                    className="text-sm font-medium"
-                  >
+                  <label htmlFor="timeLimit" className="text-sm font-medium">
                     Time Limit (ms)
                   </label>
 
@@ -437,10 +409,7 @@ export default function ProblemManagementTable({
                 </div>
 
                 <div className="space-y-2">
-                  <label
-                    htmlFor="memoryLimit"
-                    className="text-sm font-medium"
-                  >
+                  <label htmlFor="memoryLimit" className="text-sm font-medium">
                     Memory Limit (MB)
                   </label>
 
@@ -460,16 +429,11 @@ export default function ProblemManagementTable({
             </div>
 
             <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setIsEditOpen(false)}
-              >
+              <Button variant="outline" onClick={() => setIsEditOpen(false)}>
                 Cancel
               </Button>
 
-              <Button onClick={handleUpdate}>
-                Update Problem
-              </Button>
+              <Button onClick={handleUpdate}>Update Problem</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

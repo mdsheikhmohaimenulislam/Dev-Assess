@@ -2,5 +2,5 @@ import ProblemManagementTable from "../../_components/problem/ProblemManagementT
 
 
 export default function AdminProblemsPage() {
-  return <ProblemManagementTable basePath="/admin/problems"  />;
+  return <ProblemManagementTable basePath="/admin/problem"  />;
 }

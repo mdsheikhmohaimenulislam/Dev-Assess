@@ -24,3 +24,9 @@ export function getAllProblems() {
 export function getSingleProblem(id: string) {
   return apiClient<SingleProblemResponse>(`/problem/${id}`);
 }
+
+export function deleteProblem(id: string) {
+  return apiClient(`/problem/${id}`, {
+    method: "DELETE",
+  });
+}
