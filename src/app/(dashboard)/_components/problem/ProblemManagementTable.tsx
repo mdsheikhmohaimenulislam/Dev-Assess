@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Eye, Pencil, Plus, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -20,23 +20,11 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   useDeleteProblem,
   useGetAllProblems,
+  useUpdateProblem,
 } from "@/components/hooks/problem.hook";
 import { toast } from "@/components/ui/toast";
-import { success } from "zod";
 
-interface Problem {
-  id: string;
-  title: string;
-  category: string;
-  difficulty: "EASY" | "MEDIUM" | "HARD";
-  type: "CODING";
-  description: string;
-  inputFormat: string;
-  outputFormat: string;
-  constraints: string;
-  timeLimit: number;
-  memoryLimit: number;
-}
+import { Problem } from "@/components/types";
 
 interface ProblemManagementTableProps {
   basePath: "/admin/problem" | "/company/problem";
@@ -50,6 +38,8 @@ export default function ProblemManagementTable({
   const { mutate: deleteProblemMutation, isPending: isDeleting } =
     useDeleteProblem();
 
+  const { mutate: updateProblemMutation } = useUpdateProblem();
+
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const { data } = useGetAllProblems();
@@ -59,6 +49,7 @@ export default function ProblemManagementTable({
   const [formData, setFormData] = useState({
     title: "",
     category: "",
+    type: "CODING" as "CODING",
     difficulty: "EASY" as "EASY" | "MEDIUM" | "HARD",
     description: "",
     inputFormat: "",
@@ -74,6 +65,7 @@ export default function ProblemManagementTable({
     setFormData({
       title: problem.title,
       category: problem.category,
+      type: problem.type,
       difficulty: problem.difficulty,
       description: problem.description,
       inputFormat: problem.inputFormat,
@@ -90,16 +82,18 @@ export default function ProblemManagementTable({
     if (!selectedProblem) return;
 
     const updatedProblem = {
-      id: selectedProblem.id,
       ...formData,
       timeLimit: Number(formData.timeLimit),
       memoryLimit: Number(formData.memoryLimit),
     };
-
-    console.log("Updated problem:", updatedProblem);
-
-    // এখানে পরে PATCH API call করবে
-    // await updateProblem(selectedProblem.id, updatedProblem);
+toast.add({
+  type:"success",
+  description:"Data Updated Successfully!"
+})
+    updateProblemMutation({
+      id: selectedProblem.id,
+      payload: updatedProblem,
+    });
 
     setIsEditOpen(false);
   };

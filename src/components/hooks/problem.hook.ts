@@ -4,6 +4,7 @@ import {
   getProblems,
   getSingleProblem,
   ICreateProblem,
+  updateProblem,
 } from "@/api/problem.api";
 import {
   Mutation,
@@ -12,7 +13,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import { ProblemQueryParams } from "../types";
+import { ProblemFormValues, ProblemQueryParams } from "../types";
 
 export function useCreateProblems() {
   return useMutation({
@@ -52,6 +53,21 @@ export function useDeleteProblem() {
     mutationFn: deleteProblem,
     onSuccess: () => {
       QueryClient.invalidateQueries({ queryKey: ["problem"] });
+    },
+  });
+}
+
+export function useUpdateProblem() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: ProblemFormValues }) =>
+      updateProblem(id, payload),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["problem"],
+      });
     },
   });
 }

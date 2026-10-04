@@ -30,3 +30,12 @@ export function deleteProblem(id: string) {
     method: "DELETE",
   });
 }
+
+
+
+export function updateProblem(id: string, payload: ProblemFormValues) {
+  return apiClient(`/problem/${id}`, {
+    method: "PATCH",
+    body: payload,
+  });
+}
