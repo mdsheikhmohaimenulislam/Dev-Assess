@@ -17,8 +17,16 @@ import { ProblemFormValues, ProblemQueryParams } from "../types";
 import { toast } from "../ui/toast";
 
 export function useCreateProblems() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: ICreateProblem,
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["problem"],
+      });
+    },
   });
 }
 

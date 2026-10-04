@@ -17,11 +17,12 @@ import {
 
 import Pagination from "./_components/Pagination";
 import SearchFilters from "./_components/SearchFilters";
+import { useRouter } from "next/navigation";
 
 export default function ProblemsPage() {
   // Search
   const [search, setSearch] = useState("");
-
+  const router = useRouter();
   // Filters
   const [category, setCategory] = useState("ALL");
   const [difficulty, setDifficulty] = useState("ALL");
@@ -62,9 +63,6 @@ export default function ProblemsPage() {
 
   // Problems
   const problems = data?.data ?? [];
-
-
-
 
   // Pagination meta
   const meta = data?.meta;
@@ -218,14 +216,15 @@ export default function ProblemsPage() {
 
                         {/* Details */}
 
-<div className="border-t pt-4">
-  <Button size="sm" className="w-full">
-    <Link href={`/problems/${problem.id}`}>
+                        <div className="border-t pt-4">
+    <Button
+      size="sm"
+      className="w-full"
+      onClick={() => router.push(`/problems/${problem.id}`)}
+    >
       Details
-    </Link>
-  </Button>
-</div>
-
+    </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}

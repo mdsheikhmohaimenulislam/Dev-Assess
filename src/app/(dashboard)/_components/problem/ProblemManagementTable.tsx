@@ -27,7 +27,7 @@ import { toast } from "@/components/ui/toast";
 import { Problem } from "@/components/types";
 
 interface ProblemManagementTableProps {
-  basePath: "/admin/problem" | "/company/problem";
+  basePath: "/admin/problems" | "/company/problems";
 }
 
 export default function ProblemManagementTable({

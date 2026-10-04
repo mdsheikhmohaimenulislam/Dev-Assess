@@ -24,6 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Loading from "@/app/loading";
 
 export default function DetailsPage() {
   const params = useParams<{ id: string }>();
@@ -35,15 +36,7 @@ export default function DetailsPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-muted/30 p-6">
-        <div className="mx-auto max-w-5xl">
-          <Card>
-            <CardContent className="flex min-h-100 items-center justify-center">
-              <p className="text-muted-foreground">Loading problem...</p>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+<Loading/>
     );
   }
 
