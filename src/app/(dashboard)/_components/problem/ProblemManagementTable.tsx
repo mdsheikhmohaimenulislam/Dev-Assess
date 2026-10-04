@@ -78,25 +78,27 @@ export default function ProblemManagementTable({
     setIsEditOpen(true);
   };
 
-  const handleUpdate = () => {
-    if (!selectedProblem) return;
+const handleUpdate = () => {
+  if (!selectedProblem) return;
 
-    const updatedProblem = {
-      ...formData,
-      timeLimit: Number(formData.timeLimit),
-      memoryLimit: Number(formData.memoryLimit),
-    };
-toast.add({
-  type:"success",
-  description:"Data Updated Successfully!"
-})
-    updateProblemMutation({
+  const updatedProblem = {
+    ...formData,
+    timeLimit: Number(formData.timeLimit),
+    memoryLimit: Number(formData.memoryLimit),
+  };
+
+  updateProblemMutation(
+    {
       id: selectedProblem.id,
       payload: updatedProblem,
-    });
-
-    setIsEditOpen(false);
-  };
+    },
+    {
+      onSuccess: () => {
+        setIsEditOpen(false);
+      },
+    },
+  );
+};
 
   const handleDelete = (id: string) => {
     deleteProblemMutation(id, {

@@ -14,6 +14,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { ProblemFormValues, ProblemQueryParams } from "../types";
+import { toast } from "../ui/toast";
 
 export function useCreateProblems() {
   return useMutation({
@@ -23,7 +24,7 @@ export function useCreateProblems() {
 
 export function useProblems(params: ProblemQueryParams) {
   return useQuery({
-    queryKey: ["problems", params],
+    queryKey: ["problem", params],
     queryFn: () => getProblems(params),
     placeholderData: (previousData) => previousData,
     retry: false,
@@ -31,7 +32,7 @@ export function useProblems(params: ProblemQueryParams) {
 }
 export function useGetAllProblems() {
   return useQuery({
-    queryKey: ["problems"],
+    queryKey: ["problem"],
     queryFn: getAllProblems,
 
     retry: false,
@@ -67,6 +68,10 @@ export function useUpdateProblem() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["problem"],
+      });
+      toast.add({
+        type: "success",
+        description: "Data Updated Successfully!",
       });
     },
   });
