@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { useGetAllUsers } from "@/components/hooks/user.hook";
 import type { UserRole } from "@/components/types";
@@ -35,15 +36,22 @@ type UserStatus =
   | "BLOCKED"
   | "DELETED";
 
-export default function UserManagement() {
+interface UserManagementProps {
+  basePath: "/admin" | "/company";
+}
+
+export default function UserManagement({
+  basePath,
+}: UserManagementProps) {
+  const router = useRouter();
+
   const [page, setPage] = useState(1);
 
-  // What user types in the input
+  // Search
   const [search, setSearch] = useState("");
-
-  // Search value that will be sent to API
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
+  // Filters
   const [role, setRole] = useState<UserRole | undefined>();
   const [status, setStatus] = useState<UserStatus | undefined>();
 
@@ -61,16 +69,21 @@ export default function UserManagement() {
     };
   }, [search]);
 
-  const { data, isLoading, isError, isFetching } =
-    useGetAllUsers({
-      page,
-      limit,
-      search: debouncedSearch || undefined,
-      role,
-      status,
-      sortBy: "createdAt",
-      sortOrder: "desc",
-    });
+  // Fetch users
+  const {
+    data,
+    isLoading,
+    isError,
+    isFetching,
+  } = useGetAllUsers({
+    page,
+    limit,
+    search: debouncedSearch || undefined,
+    role,
+    status,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+  });
 
   const users = data?.data?.data ?? [];
   const meta = data?.data?.meta;
@@ -83,8 +96,6 @@ export default function UserManagement() {
         return "default";
 
       case "BLOCKED":
-        return "destructive";
-
       case "DELETED":
         return "destructive";
 
@@ -96,6 +107,7 @@ export default function UserManagement() {
     }
   };
 
+  // Loading
   if (isLoading) {
     return (
       <section className="space-y-6">
@@ -120,6 +132,7 @@ export default function UserManagement() {
     );
   }
 
+  // Error
   if (isError) {
     return (
       <section className="space-y-6">
@@ -165,6 +178,7 @@ export default function UserManagement() {
       <Card>
         <CardHeader>
           <div className="flex flex-col gap-3 md:flex-row">
+            {/* Search */}
             <div className="relative md:max-w-sm">
               <Input
                 type="search"
@@ -192,6 +206,7 @@ export default function UserManagement() {
                     ? undefined
                     : (value as UserRole),
                 );
+
                 setPage(1);
               }}
             >
@@ -227,6 +242,7 @@ export default function UserManagement() {
                     ? undefined
                     : (value as UserStatus),
                 );
+
                 setPage(1);
               }}
             >
@@ -272,6 +288,7 @@ export default function UserManagement() {
                   <TableHead>Role</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Created</TableHead>
+                  <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
 
@@ -307,6 +324,20 @@ export default function UserManagement() {
                         user.createdAt,
                       ).toLocaleDateString()}
                     </TableCell>
+
+                    <TableCell>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          router.push(
+                            `${basePath}/users/${user.id}`,
+                          )
+                        }
+                      >
+                        View
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -329,23 +360,31 @@ export default function UserManagement() {
           </p>
 
           <div className="flex gap-2">
+            {/* Previous */}
             <Button
               type="button"
               variant="outline"
-              disabled={page === 1}
+              disabled={page === 1 || isFetching}
               onClick={() =>
-                setPage((current) => current - 1)
+                setPage(
+                  (currentPage) => currentPage - 1,
+                )
               }
             >
               Previous
             </Button>
 
+            {/* Next */}
             <Button
               type="button"
               variant="outline"
-              disabled={page >= meta.totalPage}
+              disabled={
+                page >= meta.totalPage || isFetching
+              }
               onClick={() =>
-                setPage((current) => current + 1)
+                setPage(
+                  (currentPage) => currentPage + 1,
+                )
               }
             >
               Next
