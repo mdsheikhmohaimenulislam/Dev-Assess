@@ -70,8 +70,8 @@ export default function HomePage() {
           {/* Loading */}
           {isLoading && (
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {Array.from({ length:6 }).map((_, index) => (
-                <Card key={index} className="h-full">
+              {["one", "two", "three", "four", "five", "six"].map((id) => (
+                <Card key={id} className="h-full">
                   <CardHeader>
                     <div className="h-5 w-3/4 animate-pulse rounded bg-muted" />
 

@@ -32,6 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import UpdateUserStatus from "./UpdateUserStatus";
+import PermanentlyDeleteUser from "./PermanentlyDeleteUser";
 
 type UserStatus = "ACTIVE" | "INACTIVE" | "BLOCKED";
 
@@ -90,7 +91,6 @@ export default function UserManagement({ basePath }: UserManagementProps) {
         return "default";
 
       case "BLOCKED":
-
         return "destructive";
 
       case "INACTIVE":
@@ -228,8 +228,6 @@ export default function UserManagement({ basePath }: UserManagementProps) {
                 <SelectItem value="INACTIVE">Inactive</SelectItem>
 
                 <SelectItem value="BLOCKED">Blocked</SelectItem>
-
-        
               </SelectContent>
             </Select>
           </div>
@@ -305,7 +303,7 @@ export default function UserManagement({ basePath }: UserManagementProps) {
                         </Button>
 
                         {/* Delete */}
-                        <Button
+                        {/* <Button
                           size="sm"
                           variant="destructive"
                           onClick={() =>
@@ -313,7 +311,14 @@ export default function UserManagement({ basePath }: UserManagementProps) {
                           }
                         >
                           Delete
-                        </Button>
+                        </Button> */}
+
+                        <PermanentlyDeleteUser
+                          id={user.id}
+                          onSuccess={() => {
+                            router.refresh();
+                          }}
+                        />
                       </div>
                     </TableCell>
                   </TableRow>
