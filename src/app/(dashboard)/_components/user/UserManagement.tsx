@@ -1,18 +1,13 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useGetAllUsers } from "@/components/hooks/user.hook";
-import type { UserRole } from "@/components/types";
+import type { User, UserRole } from "@/components/types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -29,20 +24,22 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import UpdateUserStatus from "./UpdateUserStatus";
 
-type UserStatus =
-  | "ACTIVE"
-  | "INACTIVE"
-  | "BLOCKED"
-  | "DELETED";
+type UserStatus = "ACTIVE" | "INACTIVE" | "BLOCKED";
 
 interface UserManagementProps {
   basePath: "/admin" | "/company";
 }
 
-export default function UserManagement({
-  basePath,
-}: UserManagementProps) {
+export default function UserManagement({ basePath }: UserManagementProps) {
   const router = useRouter();
 
   const [page, setPage] = useState(1);
@@ -50,6 +47,8 @@ export default function UserManagement({
   // Search
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   // Filters
   const [role, setRole] = useState<UserRole | undefined>();
@@ -70,12 +69,7 @@ export default function UserManagement({
   }, [search]);
 
   // Fetch users
-  const {
-    data,
-    isLoading,
-    isError,
-    isFetching,
-  } = useGetAllUsers({
+  const { data, isLoading, isError, isFetching } = useGetAllUsers({
     page,
     limit,
     search: debouncedSearch || undefined,
@@ -96,7 +90,7 @@ export default function UserManagement({
         return "default";
 
       case "BLOCKED":
-      case "DELETED":
+
         return "destructive";
 
       case "INACTIVE":
@@ -112,9 +106,7 @@ export default function UserManagement({
     return (
       <section className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">
-            User Management
-          </h1>
+          <h1 className="text-2xl font-bold">User Management</h1>
 
           <p className="text-sm text-muted-foreground">
             Manage all registered users.
@@ -123,9 +115,7 @@ export default function UserManagement({
 
         <Card>
           <CardContent className="flex min-h-40 items-center justify-center">
-            <p className="text-sm text-muted-foreground">
-              Loading users...
-            </p>
+            <p className="text-sm text-muted-foreground">Loading users...</p>
           </CardContent>
         </Card>
       </section>
@@ -137,9 +127,7 @@ export default function UserManagement({
     return (
       <section className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold">
-            User Management
-          </h1>
+          <h1 className="text-2xl font-bold">User Management</h1>
 
           <p className="text-sm text-muted-foreground">
             Manage all registered users.
@@ -165,9 +153,7 @@ export default function UserManagement({
     <section className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold">
-          User Management
-        </h1>
+        <h1 className="text-2xl font-bold">User Management</h1>
 
         <p className="text-sm text-muted-foreground">
           Manage all registered users.
@@ -201,11 +187,7 @@ export default function UserManagement({
             <Select
               value={role ?? "ALL"}
               onValueChange={(value) => {
-                setRole(
-                  value === "ALL"
-                    ? undefined
-                    : (value as UserRole),
-                );
+                setRole(value === "ALL" ? undefined : (value as UserRole));
 
                 setPage(1);
               }}
@@ -215,21 +197,13 @@ export default function UserManagement({
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="ALL">
-                  All Roles
-                </SelectItem>
+                <SelectItem value="ALL">All Roles</SelectItem>
 
-                <SelectItem value="ADMIN">
-                  Admin
-                </SelectItem>
+                <SelectItem value="ADMIN">Admin</SelectItem>
 
-                <SelectItem value="COMPANY">
-                  Company
-                </SelectItem>
+                <SelectItem value="COMPANY">Company</SelectItem>
 
-                <SelectItem value="CANDIDATE">
-                  Candidate
-                </SelectItem>
+                <SelectItem value="CANDIDATE">Candidate</SelectItem>
               </SelectContent>
             </Select>
 
@@ -237,11 +211,7 @@ export default function UserManagement({
             <Select
               value={status ?? "ALL"}
               onValueChange={(value) => {
-                setStatus(
-                  value === "ALL"
-                    ? undefined
-                    : (value as UserStatus),
-                );
+                setStatus(value === "ALL" ? undefined : (value as UserStatus));
 
                 setPage(1);
               }}
@@ -251,25 +221,15 @@ export default function UserManagement({
               </SelectTrigger>
 
               <SelectContent>
-                <SelectItem value="ALL">
-                  All Status
-                </SelectItem>
+                <SelectItem value="ALL">All Status</SelectItem>
 
-                <SelectItem value="ACTIVE">
-                  Active
-                </SelectItem>
+                <SelectItem value="ACTIVE">Active</SelectItem>
 
-                <SelectItem value="INACTIVE">
-                  Inactive
-                </SelectItem>
+                <SelectItem value="INACTIVE">Inactive</SelectItem>
 
-                <SelectItem value="BLOCKED">
-                  Blocked
-                </SelectItem>
+                <SelectItem value="BLOCKED">Blocked</SelectItem>
 
-                <SelectItem value="DELETED">
-                  Deleted
-                </SelectItem>
+        
               </SelectContent>
             </Select>
           </div>
@@ -295,48 +255,66 @@ export default function UserManagement({
               <TableBody>
                 {users.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell className="font-medium">
-                      {user.name}
-                    </TableCell>
+                    <TableCell className="font-medium">{user.name}</TableCell>
 
                     <TableCell className="text-muted-foreground">
                       {user.email}
                     </TableCell>
 
                     <TableCell>
-                      <Badge variant="outline">
-                        {user.role}
-                      </Badge>
+                      <Badge variant="outline">{user.role}</Badge>
                     </TableCell>
 
                     <TableCell>
                       <Badge
-                        variant={getStatusVariant(
-                          user.status,
-                        )}
+                        className={
+                          user.status === "INACTIVE"
+                            ? "border-yellow-500 bg-yellow-100 text-yellow-700"
+                            : ""
+                        }
+                        variant={getStatusVariant(user.status)}
                       >
                         {user.status}
                       </Badge>
                     </TableCell>
 
                     <TableCell className="text-muted-foreground">
-                      {new Date(
-                        user.createdAt,
-                      ).toLocaleDateString()}
+                      {new Date(user.createdAt).toLocaleDateString()}
                     </TableCell>
 
                     <TableCell>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() =>
-                          router.push(
-                            `${basePath}/users/${user.id}`,
-                          )
-                        }
-                      >
-                        View
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        {/* View */}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() =>
+                            router.push(`${basePath}/users/${user.id}`)
+                          }
+                        >
+                          View
+                        </Button>
+
+                        {/* Edit */}
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setSelectedUser(user)}
+                        >
+                          Edit
+                        </Button>
+
+                        {/* Delete */}
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() =>
+                            router.push(`${basePath}/users/${user.id}/delete`)
+                          }
+                        >
+                          Delete
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -365,11 +343,7 @@ export default function UserManagement({
               type="button"
               variant="outline"
               disabled={page === 1 || isFetching}
-              onClick={() =>
-                setPage(
-                  (currentPage) => currentPage - 1,
-                )
-              }
+              onClick={() => setPage((currentPage) => currentPage - 1)}
             >
               Previous
             </Button>
@@ -378,20 +352,44 @@ export default function UserManagement({
             <Button
               type="button"
               variant="outline"
-              disabled={
-                page >= meta.totalPage || isFetching
-              }
-              onClick={() =>
-                setPage(
-                  (currentPage) => currentPage + 1,
-                )
-              }
+              disabled={page >= meta.totalPage || isFetching}
+              onClick={() => setPage((currentPage) => currentPage + 1)}
             >
               Next
             </Button>
           </div>
         </div>
       )}
+      <Dialog
+        open={selectedUser !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedUser(null);
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Update User</DialogTitle>
+
+            <DialogDescription>
+              Update the account status of{" "}
+              <span className="font-medium">{selectedUser?.name}</span>
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedUser && (
+            <UpdateUserStatus
+              id={selectedUser.id}
+              currentStatus={selectedUser.status}
+              onSuccess={() => {
+                setSelectedUser(null);
+                router.refresh();
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

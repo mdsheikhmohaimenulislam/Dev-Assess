@@ -20,6 +20,8 @@ export function useGetSingleUser(id: string) {
   });
 }
 
+
+
 // Update my profile
 export function useUpdateMyProfile() {
   const queryClient = useQueryClient();

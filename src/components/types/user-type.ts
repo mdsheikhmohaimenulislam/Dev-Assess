@@ -6,7 +6,7 @@ export interface User {
   name: string;
   email: string;
   role: UserRole;
-  status: "ACTIVE" | "INACTIVE" | "BLOCKED" | "DELETED";
+  status: "ACTIVE" | "INACTIVE" | "BLOCKED" ;
   imageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -43,7 +43,7 @@ export interface GetUsersParams {
   limit?: number;
   search?: string;
   role?: UserRole;
-  status?: "ACTIVE" | "INACTIVE" | "BLOCKED" | "DELETED";
+  status?: "ACTIVE" | "INACTIVE" | "BLOCKED" ;
   sortBy?: "createdAt";
   sortOrder?: "asc" | "desc";
 }
@@ -57,7 +57,7 @@ export interface UpdateUserProfilePayload {
   name?: string;
   imageUrl?: string;
   role?: UserRole;
-  status?: "ACTIVE" | "INACTIVE" | "BLOCKED" | "DELETED";
+  status?: "ACTIVE" | "INACTIVE" | "BLOCKED";
 }
 export interface UpdateUserStatusPayload {
   status: "ACTIVE" | "INACTIVE" | "BLOCKED";

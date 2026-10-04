@@ -24,6 +24,10 @@ export function updateMyProfile(id: string, payload: UpdateMyProfilePayload) {
   });
 }
 
+
+
+
+
 // Update user status
 export function updateUserStatus(id: string, payload: UpdateUserStatusPayload) {
   return apiClient<UserResponse>(`/users/status/${id}`, {
