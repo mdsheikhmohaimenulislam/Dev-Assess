@@ -303,15 +303,6 @@ export default function UserManagement({ basePath }: UserManagementProps) {
                         </Button>
 
                         {/* Delete */}
-                        {/* <Button
-                          size="sm"
-                          variant="destructive"
-                          onClick={() =>
-                            router.push(`${basePath}/users/${user.id}/delete`)
-                          }
-                        >
-                          Delete
-                        </Button> */}
 
                         <PermanentlyDeleteUser
                           id={user.id}

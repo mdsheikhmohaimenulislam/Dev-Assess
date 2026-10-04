@@ -9,8 +9,13 @@ import { toast } from "@/components/ui/toast";
 import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import Logout from "./Logout";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
+
+  const pathname = usePathname();
+
+
   const routes = [
 
     { name: "Assessments", url: "/assessments" },
@@ -41,15 +46,23 @@ export default function Navbar() {
 
         {/* Navigation */}
         <nav className="hidden items-center gap-5 md:flex">
-          {routes.map((route) => (
-            <Link
-              key={route.url}
-              href={route.url}
-              className="text-sm font-medium transition-colors hover:text-primary"
-            >
-              {route.name}
-            </Link>
-          ))}
+{routes.map((route) => {
+  const isActive = pathname === route.url;
+
+  return (
+    <Link
+      key={route.url}
+      href={route.url}
+      className={`transition-colors ${
+        isActive
+          ? "font-semibold text-primary"
+          : "text-muted-foreground hover:text-primary"
+      }`}
+    >
+      {route.name}
+    </Link>
+  );
+})}
 
           {role && (
             <Link
