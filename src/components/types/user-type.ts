@@ -16,14 +16,20 @@ export interface UsersResponse {
   success: boolean;
   statusCode: number;
   message: string;
-  data: User[];
-  meta: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPage: number;
+  data: {
+    data: User[];
+    meta: UsersMeta;
   };
 }
+
+
+export interface UsersMeta {
+  page: number;
+  limit: number;
+  total: number;
+  totalPage: number;
+}
+
 
 export interface UserResponse {
   success: boolean;
