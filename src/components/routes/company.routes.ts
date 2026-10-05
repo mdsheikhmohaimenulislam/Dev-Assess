@@ -21,6 +21,10 @@ export const companyRoutes = [
         title: "Create Company",
         url: `${prefix}/createCompany`,
       },
+            {
+        title: "My Company",
+        url: `${prefix}/myCompany`,
+      },
       {
         title: "Candidates",
         url: `${prefix}/candidates`,
