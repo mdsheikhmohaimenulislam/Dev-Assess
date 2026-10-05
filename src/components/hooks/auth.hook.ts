@@ -8,13 +8,11 @@ import {
   userRegistration,
   verifyAccount,
 } from "@/api/auth.api";
-import { useMutation, useQuery } from "@tanstack/react-query";
-
-export function useLogin() {
-  return useMutation({
-    mutationFn: userLogin,
-  });
-}
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 export function useVerifyAccount() {
   return useMutation({
@@ -28,19 +26,42 @@ export function useRegistration() {
   });
 }
 
+// Logout
 export function useLogout() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: userLogout,
+
+    onSuccess: () => {
+      queryClient.removeQueries({
+        queryKey: ["user"],
+      });
+    },
   });
 }
 
-// export function useGoogleLlogin() { return useMutation({ mutationFn: googleLogin, }); }
-
+// Get current logged-in user
 export function useGetMe() {
   return useQuery({
     queryKey: ["user"],
     queryFn: getMe,
     retry: false,
+  });
+}
+
+// Login
+export function useLogin() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: userLogin,
+
+    onSuccess: async () => {
+      await queryClient.refetchQueries({
+        queryKey: ["user"],
+      });
+    },
   });
 }
 
@@ -57,5 +78,7 @@ export function usePasswordReset() {
 }
 
 export function useGoogleLogin() {
-  return useMutation({ mutationFn: googleLogin });
+  return useMutation({
+    mutationFn: googleLogin,
+  });
 }

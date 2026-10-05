@@ -1,4 +1,6 @@
-import UserManagement from "../../_components/user/UserManagement";
+import UserManagement from '../../_components/user/UserManagement';
+
+
 
 
 export default function UsersPage() {

@@ -14,7 +14,7 @@ export const adminRoutes = [
       },
       {
         title: "Companies",
-        url: `${prefix}/companies`,
+        url: `${prefix}/company`,
       },
       {
         title: "Assessments",

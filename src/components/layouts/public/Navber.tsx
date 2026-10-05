@@ -1,23 +1,17 @@
 "use client";
 
 import Logo from "@/assets/svg/Logo";
-import { useGetMe, useLogout } from "@/components/hooks/auth.hook";
+import { useGetMe } from "@/components/hooks/auth.hook";
 import { UserRole } from "@/components/types";
 import { Button } from "@/components/ui/button";
-import { toast } from "@/components/ui/toast";
-
-import { useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import Logout from "./Logout";
 import { usePathname } from "next/navigation";
+import Logout from "./Logout";
 
 export default function Navbar() {
-
   const pathname = usePathname();
 
-
   const routes = [
-
     { name: "Assessments", url: "/assessments" },
     { name: "Problems", url: "/problems" },
     { name: "Companies", url: "/companies" },
@@ -36,7 +30,7 @@ export default function Navbar() {
   const role = data?.data?.role as UserRole | undefined;
 
   return (
-    <header className="h-16 w-full border-b sticky top-0 z-50 bg-background">
+    <header className="sticky top-0 z-50 h-16 w-full border-b bg-background">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -46,23 +40,23 @@ export default function Navbar() {
 
         {/* Navigation */}
         <nav className="hidden items-center gap-5 md:flex">
-{routes.map((route) => {
-  const isActive = pathname === route.url;
+          {routes.map((route) => {
+            const isActive = pathname === route.url;
 
-  return (
-    <Link
-      key={route.url}
-      href={route.url}
-      className={`transition-colors ${
-        isActive
-          ? "font-semibold text-primary"
-          : "text-muted-foreground hover:text-primary"
-      }`}
-    >
-      {route.name}
-    </Link>
-  );
-})}
+            return (
+              <Link
+                key={route.url}
+                href={route.url}
+                className={`transition-colors ${
+                  isActive
+                    ? "font-semibold text-primary"
+                    : "text-muted-foreground hover:text-primary"
+                }`}
+              >
+                {route.name}
+              </Link>
+            );
+          })}
 
           {role && (
             <Link
@@ -76,7 +70,13 @@ export default function Navbar() {
 
         {/* Authentication */}
         <div>
-          {!isLoading && !data && (
+          {isLoading ? (
+            <Button variant="outline" disabled>
+              Loading...
+            </Button>
+          ) : data ? (
+            <Logout />
+          ) : (
             <Button
               variant="outline"
               render={<Link href="/login" />}
@@ -85,14 +85,6 @@ export default function Navbar() {
               Login
             </Button>
           )}
-
-          {isLoading ? (
-            <Button variant="outline" disabled>
-              Loading...
-            </Button>
-          ) : data ? (
-            <Logout />
-          ) : null}
         </div>
       </div>
     </header>

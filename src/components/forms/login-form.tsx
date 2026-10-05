@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { Eye, EyeClosed } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+
 
 import { useForm } from "@tanstack/react-form";
 
@@ -25,6 +25,7 @@ import { Input } from "../ui/input";
 import { Spinner } from "../ui/spinner";
 import { toast } from "../ui/toast";
 import GoogleAuthButton from "../auth/google-auth-button";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -32,8 +33,8 @@ export default function LoginForm() {
   const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
 
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
+const router = useRouter();
 
-  const router = useRouter();
 
   const { mutate: login, isPending: loginPending } = useLogin();
 
@@ -53,45 +54,45 @@ export default function LoginForm() {
         password: value.password,
       };
 
-      login(loginData, {
-        onSuccess: () => {
-          toast.add({
-            title: "Login Successful",
-            description: "Welcome back to Code Assess.",
-            type: "success",
-          });
+login(loginData, {
+  onSuccess: () => {
+    toast.add({
+      title: "Login Successful",
+      description: "Welcome back to Code Assess.",
+      type: "success",
+    });
 
-          router.push("/");
-        },
+    router.push("/");
+  },
 
-        onError: (error) => {
-          const message = error.message?.toLowerCase() ?? "";
+  onError: (error) => {
+    const message = error.message?.toLowerCase() ?? "";
 
-          if (message.includes("email")) {
-            toast.add({
-              title: "Login Failed",
-              description: "Invalid email address.",
-              type: "error",
-            });
-            return;
-          }
-
-          if (message.includes("password")) {
-            toast.add({
-              title: "Login Failed",
-              description: "Incorrect password.",
-              type: "error",
-            });
-            return;
-          }
-
-          toast.add({
-            title: "Login Failed",
-            description: "Something went wrong. Please try again.",
-            type: "error",
-          });
-        },
+    if (message.includes("email")) {
+      toast.add({
+        title: "Login Failed",
+        description: "Invalid email address.",
+        type: "error",
       });
+      return;
+    }
+
+    if (message.includes("password")) {
+      toast.add({
+        title: "Login Failed",
+        description: "Incorrect password.",
+        type: "error",
+      });
+      return;
+    }
+
+    toast.add({
+      title: "Login Failed",
+      description: "Something went wrong. Please try again.",
+      type: "error",
+    });
+  },
+});
     },
   });
 
