@@ -26,7 +26,7 @@ export default function EditCompanyPage() {
     );
   }
 
-  if (isError || !data?.data) {
+  if (isError || !data) {
     return (
       <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 text-center">
         <p className="text-sm text-destructive">
@@ -50,7 +50,7 @@ export default function EditCompanyPage() {
 
       <div className="rounded-xl border bg-card p-6 shadow-sm">
         <UpdateCompanyForm
-          company={data.data}
+          company={data}
           onSuccess={() => {
             router.push("/company/myCompany");
           }}

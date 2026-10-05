@@ -45,8 +45,9 @@ export default function MyCompany() {
       </div>
     );
   }
+  console.log(data);
 
-  const company = data.data;
+  const company = data?.data;
 
   return (
     <>

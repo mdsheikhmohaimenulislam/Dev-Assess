@@ -38,3 +38,9 @@ export interface UpdateCompanyPayload {
   website?: string;
   logo?: string;
 }
+export interface CompanyResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: Company;
+}

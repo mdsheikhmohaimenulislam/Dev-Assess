@@ -1,5 +1,5 @@
 import apiClient from '@/lib/apiClient';
-import { Company, CompanyListResponse, CreateCompanyPayload, UpdateCompanyPayload } from '../components/types/company.type';
+import { Company, CompanyListResponse, CompanyResponse, CreateCompanyPayload, UpdateCompanyPayload } from '../components/types/company.type';
 
 
 
@@ -20,7 +20,7 @@ export function createCompany(payload: CreateCompanyPayload) {
 
 // Get own company profile
 export function getMyCompany() {
-  return apiClient<Company>("/company/me", {
+  return apiClient<CompanyResponse>("/company/me", {
     method: "GET",
   });
 }
