@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/select";
 
 import UpdateAssessmentForm from "./UpdateAssessmentForm";
+import AssessmentProblemForm from "../AssessmentProblemForm/AssessmentProblemForm";
 
 type AssessmentStatus =
   | "DRAFT"
@@ -44,7 +45,8 @@ interface AssessmentManagementProps {
 export default function AssessmentManagement({
   basePath,
 }: AssessmentManagementProps) {
-  const [editAssessmentId, setEditAssessmentId] = useState<string | null>(
+  const [editAssessmentId, setEditAssessmentId] = useState<string | null>(null);
+  const [problemAssessmentId, setProblemAssessmentId] = useState<string | null>(
     null,
   );
 
@@ -79,8 +81,6 @@ export default function AssessmentManagement({
     }
   };
 
-
-
   /* ---------------- Delete Assessment ---------------- */
 
   const handleDelete = (id: string) => {
@@ -104,10 +104,7 @@ export default function AssessmentManagement({
 
   /* ---------------- Update Status ---------------- */
 
-  const handleStatusUpdate = (
-    id: string,
-    status: AssessmentStatus,
-  ) => {
+  const handleStatusUpdate = (id: string, status: AssessmentStatus) => {
     updateAssessmentStatus.mutate(
       {
         id,
@@ -115,16 +112,11 @@ export default function AssessmentManagement({
       },
       {
         onSuccess: () => {
-          toast.success(
-            `Assessment status changed to ${status}.`,
-          );
+          toast.success(`Assessment status changed to ${status}.`);
         },
 
         onError: (error) => {
-          console.error(
-            "Assessment status update error:",
-            error,
-          );
+          console.error("Assessment status update error:", error);
 
           toast.error("Failed to update assessment status.");
         },
@@ -137,9 +129,7 @@ export default function AssessmentManagement({
   if (isLoading) {
     return (
       <div className="rounded-xl border bg-card p-6 text-center">
-        <p className="text-sm text-muted-foreground">
-          Loading assessments...
-        </p>
+        <p className="text-sm text-muted-foreground">Loading assessments...</p>
       </div>
     );
   }
@@ -149,9 +139,7 @@ export default function AssessmentManagement({
   if (isError) {
     return (
       <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 text-center">
-        <p className="text-sm text-destructive">
-          Failed to load assessments.
-        </p>
+        <p className="text-sm text-destructive">Failed to load assessments.</p>
       </div>
     );
   }
@@ -162,30 +150,24 @@ export default function AssessmentManagement({
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Assessments
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">Assessments</h1>
 
             <p className="mt-1 text-sm text-muted-foreground">
               Create and manage your assessments.
             </p>
           </div>
-
-
         </div>
 
         {/* Empty State */}
         {assessments.length === 0 ? (
           <div className="rounded-xl border bg-card p-10 text-center">
-            <h3 className="text-lg font-semibold">
-              No assessments found
-            </h3>
+            <h3 className="text-lg font-semibold">No assessments found</h3>
 
             <p className="mt-1 text-sm text-muted-foreground">
               Create your first assessment to get started.
             </p>
 
-            <Button className="mt-4" >
+            <Button className="mt-4">
               <Link href={`${basePath}/create`}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create Assessment
@@ -199,31 +181,19 @@ export default function AssessmentManagement({
               <table className="w-full text-sm">
                 <thead className="border-b bg-muted/50">
                   <tr>
-                    <th className="px-4 py-3 text-left font-medium">
-                      Title
-                    </th>
+                    <th className="px-4 py-3 text-left font-medium">Title</th>
 
                     <th className="px-4 py-3 text-left font-medium">
                       Duration
                     </th>
 
-                    <th className="px-4 py-3 text-left font-medium">
-                      Marks
-                    </th>
+                    <th className="px-4 py-3 text-left font-medium">Marks</th>
 
-                    <th className="px-4 py-3 text-left font-medium">
-                      Access
-                    </th>
+                    <th className="px-4 py-3 text-left font-medium">Access</th>
 
+                    <th className="px-4 py-3 text-left font-medium">Status</th>
 
-
-                    <th className="px-4 py-3 text-left font-medium">
-                      Status
-                    </th>
-
-                    <th className="px-4 py-3 text-right font-medium">
-                      Action
-                    </th>
+                    <th className="px-4 py-3 text-right font-medium">Action</th>
 
                     <th className="px-4 py-3 text-right font-medium">
                       Status Action
@@ -233,8 +203,7 @@ export default function AssessmentManagement({
 
                 <tbody>
                   {assessments.map((assessment) => {
-                    const status =
-                      assessment?.status as AssessmentStatus;
+                    const status = assessment?.status as AssessmentStatus;
 
                     return (
                       <tr
@@ -249,8 +218,7 @@ export default function AssessmentManagement({
                             </p>
 
                             <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
-                              {assessment.description ||
-                                "No description"}
+                              {assessment.description || "No description"}
                             </p>
                           </div>
                         </td>
@@ -274,8 +242,6 @@ export default function AssessmentManagement({
                           </span>
                         </td>
 
-
-
                         {/* Status */}
                         <td className="px-4 py-4">
                           <span
@@ -289,17 +255,14 @@ export default function AssessmentManagement({
 
                         {/* Action */}
                         <td className="px-4 py-4">
-                          <div className="flex items-center justify-end gap-2">
+                          <div className="flex items-center justify-end  gap-2">
                             {/* View */}
                             <Button
                               variant="outline"
                               size="icon"
-                 
                               title="View assessment"
                             >
-                              <Link
-                                href={`${basePath}/${assessment.id}`}
-                              >
+                              <Link href={`${basePath}/${assessment.id}`}>
                                 <Eye className="h-4 w-4" />
                               </Link>
                             </Button>
@@ -309,11 +272,7 @@ export default function AssessmentManagement({
                               variant="outline"
                               size="icon"
                               title="Edit assessment"
-                              onClick={() =>
-                                setEditAssessmentId(
-                                  assessment.id,
-                                )
-                              }
+                              onClick={() => setEditAssessmentId(assessment.id)}
                             >
                               <Pencil className="h-4 w-4" />
                             </Button>
@@ -323,16 +282,20 @@ export default function AssessmentManagement({
                               variant="destructive"
                               size="icon"
                               title="Delete assessment"
-                              onClick={() =>
-                                handleDelete(
-                                  assessment.id,
-                                )
-                              }
-                              disabled={
-                                deleteAssessment.isPending
-                              }
+                              onClick={() => handleDelete(assessment.id)}
+                              disabled={deleteAssessment.isPending}
                             >
                               <Trash2 className="h-4 w-4" />
+                            </Button>
+
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() =>
+                                setProblemAssessmentId(assessment.id)
+                              }
+                            >
+                              Problems
                             </Button>
                           </div>
                         </td>
@@ -348,29 +311,22 @@ export default function AssessmentManagement({
                                   value as AssessmentStatus,
                                 )
                               }
-                              disabled={
-                                updateAssessmentStatus.isPending
-                              }
+                              disabled={updateAssessmentStatus.isPending}
                             >
                               <SelectTrigger
-                              
                                 title={`Current status: ${status}`}
                               >
                                 <Pencil className="h-4 w-4" />
                               </SelectTrigger>
 
                               <SelectContent align="end">
-                                <SelectItem value="DRAFT">
-                                  DRAFT
-                                </SelectItem>
+                                <SelectItem value="DRAFT">DRAFT</SelectItem>
 
                                 <SelectItem value="PUBLISHED">
                                   PUBLISHED
                                 </SelectItem>
 
-                                <SelectItem value="ONGOING">
-                                  ONGOING
-                                </SelectItem>
+                                <SelectItem value="ONGOING">ONGOING</SelectItem>
 
                                 <SelectItem value="COMPLETED">
                                   COMPLETED
@@ -404,9 +360,7 @@ export default function AssessmentManagement({
       >
         <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
           <DialogHeader>
-            <DialogTitle>
-              Edit Assessment
-            </DialogTitle>
+            <DialogTitle>Edit Assessment</DialogTitle>
 
             <DialogDescription>
               Update the assessment information below.
@@ -423,6 +377,38 @@ export default function AssessmentManagement({
           )}
         </DialogContent>
       </Dialog>
+
+
+      <Dialog
+  open={problemAssessmentId !== null}
+  onOpenChange={(open) => {
+    if (!open) {
+      setProblemAssessmentId(null);
+    }
+  }}
+>
+  <DialogContent className="sm:max-w-2xl">
+    <DialogHeader>
+      <DialogTitle>
+        Add Problem to Assessment
+      </DialogTitle>
+
+      <DialogDescription>
+        Select a problem, set its marks and order,
+        then add it to the assessment.
+      </DialogDescription>
+    </DialogHeader>
+
+    {problemAssessmentId && (
+      <AssessmentProblemForm
+        assessmentId={problemAssessmentId}
+        onSuccess={() => {
+          setProblemAssessmentId(null);
+        }}
+      />
+    )}
+  </DialogContent>
+</Dialog>
     </>
   );
 }
