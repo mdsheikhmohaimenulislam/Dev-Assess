@@ -455,6 +455,7 @@ export default function CreateAssessmentForm({
               id="price"
               name="price"
               type="number"
+              required
               min="1"
               value={formData.price}
               onChange={handleChange}

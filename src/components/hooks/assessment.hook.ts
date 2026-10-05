@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
   createAssessment,
@@ -37,8 +33,7 @@ export function useCreateAssessment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CreateAssessmentPayload) =>
-      createAssessment(payload),
+    mutationFn: (payload: CreateAssessmentPayload) => createAssessment(payload),
 
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -94,13 +89,8 @@ export function useUpdateAssessmentStatus() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({
-      id,
-      status,
-    }: {
-      id: string;
-      status: string;
-    }) => updateAssessmentStatus(id, status),
+    mutationFn: ({ id, status }: { id: string; status: string }) =>
+      updateAssessmentStatus(id, status),
 
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({

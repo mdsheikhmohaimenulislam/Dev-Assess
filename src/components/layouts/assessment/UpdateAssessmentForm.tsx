@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { useGetAssessmentById, useUpdateAssessment } from "@/components/hooks/assessment.hook";
+import {
+  useGetAssessmentById,
+  useUpdateAssessment,
+} from "@/components/hooks/assessment.hook";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,10 +16,12 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface UpdateAssessmentFormProps {
   id: string;
+  onSuccess?: () => void;
 }
 
 export default function UpdateAssessmentForm({
   id,
+  onSuccess,
 }: UpdateAssessmentFormProps) {
   const router = useRouter();
 
@@ -41,21 +47,33 @@ export default function UpdateAssessmentForm({
       return;
     }
 
-    const formatDateTime = (date: string) => {
+    const formatDateTime = (
+      date: string | null | undefined,
+    ): string => {
+      if (!date) {
+        return "";
+      }
+
       const value = new Date(date);
 
       const year = value.getFullYear();
-      const month = String(value.getMonth() + 1).padStart(2, "0");
+      const month = String(value.getMonth() + 1).padStart(
+        2,
+        "0",
+      );
       const day = String(value.getDate()).padStart(2, "0");
       const hours = String(value.getHours()).padStart(2, "0");
-      const minutes = String(value.getMinutes()).padStart(2, "0");
+      const minutes = String(value.getMinutes()).padStart(
+        2,
+        "0",
+      );
 
       return `${year}-${month}-${day}T${hours}:${minutes}`;
     };
 
     setFormData({
       title: assessment.title,
-      description: assessment.description,
+      description: assessment.description ?? "",
       duration: String(assessment.duration),
       startTime: formatDateTime(assessment.startTime),
       endTime: formatDateTime(assessment.endTime),
@@ -91,70 +109,169 @@ export default function UpdateAssessmentForm({
     const title = formData.title.trim();
     const description = formData.description.trim();
 
+    // Title validation
     if (!title) {
       toast.error("Assessment title is required.");
       return;
     }
 
-    if (!description) {
-      toast.error("Assessment description is required.");
+    if (title.length < 3) {
+      toast.error("Title must be at least 3 characters.");
       return;
     }
 
-    if (!formData.startTime || !formData.endTime) {
-      toast.error("Start time and end time are required.");
+    if (title.length > 200) {
+      toast.error("Title cannot exceed 200 characters.");
       return;
     }
 
+    // Description validation
+    if (description.length > 2000) {
+      toast.error(
+        "Description cannot exceed 2000 characters.",
+      );
+      return;
+    }
+
+    // Number conversion
+    const duration = Number(formData.duration);
+    const totalMarks = Number(formData.totalMarks);
+    const passingMarks = Number(formData.passingMarks);
+
+    // Duration validation
+    if (!Number.isInteger(duration) || duration <= 0) {
+      toast.error(
+        "Duration must be a positive integer.",
+      );
+      return;
+    }
+
+    // Total marks validation
+    if (totalMarks <= 0) {
+      toast.error(
+        "Total marks must be greater than 0.",
+      );
+      return;
+    }
+
+    // Passing marks validation
+    if (passingMarks < 0) {
+      toast.error(
+        "Passing marks cannot be negative.",
+      );
+      return;
+    }
+
+    if (passingMarks > totalMarks) {
+      toast.error(
+        "Passing marks cannot be greater than total marks.",
+      );
+      return;
+    }
+
+    // Date validation
+    if (formData.startTime && formData.endTime) {
+      const startTime = new Date(formData.startTime);
+      const endTime = new Date(formData.endTime);
+
+      if (startTime >= endTime) {
+        toast.error(
+          "End time must be greater than start time.",
+        );
+        return;
+      }
+    }
+
+    // Paid assessment validation
     if (
       formData.accessType === "PAID" &&
       !formData.price.trim()
     ) {
-      toast.error("Price is required for paid assessment.");
+      toast.error(
+        "Price is required for paid assessment.",
+      );
       return;
     }
 
+    if (formData.accessType === "PAID") {
+      const price = Number(formData.price);
+
+      if (price <= 0) {
+        toast.error(
+          "Price must be greater than 0.",
+        );
+        return;
+      }
+    }
+
+    // Update request
     updateAssessment.mutate(
       {
         id,
+
         payload: {
           title,
-          description,
-          duration: Number(formData.duration),
-          startTime: new Date(
-            formData.startTime,
-          ).toISOString(),
-          endTime: new Date(
-            formData.endTime,
-          ).toISOString(),
-          totalMarks: Number(formData.totalMarks),
-          passingMarks: Number(formData.passingMarks),
+
+          ...(description && {
+            description,
+          }),
+
+          duration,
+
+          ...(formData.startTime && {
+            startTime: new Date(
+              formData.startTime,
+            ).toISOString(),
+          }),
+
+          ...(formData.endTime && {
+            endTime: new Date(
+              formData.endTime,
+            ).toISOString(),
+          }),
+
+          totalMarks,
+
+          passingMarks,
+
           accessType: formData.accessType,
-          price:
-            formData.accessType === "PAID"
-              ? Number(formData.price)
-              : undefined,
+
+          ...(formData.accessType === "PAID" && {
+            price: Number(formData.price),
+          }),
         },
       },
       {
         onSuccess: () => {
-          toast.success("Assessment updated successfully.");
+          toast.success(
+            "Assessment updated successfully.",
+          );
 
-          router.push(`/company/assessments/${id}`);
+          // Close modal
+          onSuccess?.();
+
+          // Refresh current page
+          router.refresh();
         },
 
         onError: (error) => {
-          console.error("Update assessment error:", error);
+          console.error(
+            "Update assessment error:",
+            error,
+          );
 
-          toast.error("Failed to update assessment.");
+          toast.error(
+            "Failed to update assessment.",
+          );
         },
       },
     );
   };
 
+  // Loading
   if (isLoading) {
     return (
-      <div className="rounded-xl border bg-card p-6 text-center">
+      <div className="py-10 text-center">
         <p className="text-sm text-muted-foreground">
           Loading assessment...
         </p>
@@ -162,6 +279,7 @@ export default function UpdateAssessmentForm({
     );
   }
 
+  // Error
   if (isError || !assessment) {
     return (
       <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 text-center">
@@ -184,11 +302,13 @@ export default function UpdateAssessmentForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-xl border bg-card p-6 shadow-sm"
+      className="space-y-6"
     >
       {/* Title */}
       <div className="space-y-2">
-        <Label htmlFor="title">Assessment Title</Label>
+        <Label htmlFor="title">
+          Assessment Title
+        </Label>
 
         <Input
           id="title"
@@ -202,7 +322,9 @@ export default function UpdateAssessmentForm({
 
       {/* Description */}
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="description">
+          Description
+        </Label>
 
         <Textarea
           id="description"
@@ -210,13 +332,14 @@ export default function UpdateAssessmentForm({
           value={formData.description}
           onChange={handleChange}
           placeholder="Describe the assessment"
-          rows={5}
+          rows={4}
           disabled={updateAssessment.isPending}
         />
       </div>
 
       {/* Duration / Marks */}
       <div className="grid gap-5 md:grid-cols-3">
+        {/* Duration */}
         <div className="space-y-2">
           <Label htmlFor="duration">
             Duration (minutes)
@@ -233,6 +356,7 @@ export default function UpdateAssessmentForm({
           />
         </div>
 
+        {/* Total Marks */}
         <div className="space-y-2">
           <Label htmlFor="totalMarks">
             Total Marks
@@ -249,6 +373,7 @@ export default function UpdateAssessmentForm({
           />
         </div>
 
+        {/* Passing Marks */}
         <div className="space-y-2">
           <Label htmlFor="passingMarks">
             Passing Marks
@@ -268,6 +393,7 @@ export default function UpdateAssessmentForm({
 
       {/* Access Type / Price */}
       <div className="grid gap-5 md:grid-cols-2">
+        {/* Access Type */}
         <div className="space-y-2">
           <Label htmlFor="accessType">
             Access Type
@@ -281,20 +407,28 @@ export default function UpdateAssessmentForm({
             disabled={updateAssessment.isPending}
             className="flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm"
           >
-            <option value="FREE">Free</option>
-            <option value="PAID">Paid</option>
+            <option value="FREE">
+              Free
+            </option>
+
+            <option value="PAID">
+              Paid
+            </option>
           </select>
         </div>
 
+        {/* Price */}
         {formData.accessType === "PAID" && (
           <div className="space-y-2">
-            <Label htmlFor="price">Price</Label>
+            <Label htmlFor="price">
+              Price
+            </Label>
 
             <Input
               id="price"
               name="price"
               type="number"
-              min="0"
+              min="1"
               value={formData.price}
               onChange={handleChange}
               placeholder="500"
@@ -306,6 +440,7 @@ export default function UpdateAssessmentForm({
 
       {/* Dates */}
       <div className="grid gap-5 md:grid-cols-2">
+        {/* Start Time */}
         <div className="space-y-2">
           <Label htmlFor="startTime">
             Start Time
@@ -321,6 +456,7 @@ export default function UpdateAssessmentForm({
           />
         </div>
 
+        {/* End Time */}
         <div className="space-y-2">
           <Label htmlFor="endTime">
             End Time
@@ -330,6 +466,7 @@ export default function UpdateAssessmentForm({
             id="endTime"
             name="endTime"
             type="datetime-local"
+            min={formData.startTime}
             value={formData.endTime}
             onChange={handleChange}
             disabled={updateAssessment.isPending}
@@ -337,8 +474,8 @@ export default function UpdateAssessmentForm({
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex gap-3">
+      {/* Action */}
+      <div className="flex justify-end">
         <Button
           type="submit"
           disabled={updateAssessment.isPending}
@@ -346,15 +483,6 @@ export default function UpdateAssessmentForm({
           {updateAssessment.isPending
             ? "Updating..."
             : "Update Assessment"}
-        </Button>
-
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => router.back()}
-          disabled={updateAssessment.isPending}
-        >
-          Cancel
         </Button>
       </div>
     </form>
