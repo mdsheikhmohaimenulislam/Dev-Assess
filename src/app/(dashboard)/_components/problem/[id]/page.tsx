@@ -11,11 +11,17 @@ import {
   UserRound,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useGetSingleProblem } from "@/components/hooks/problem.hook";
 
-export default function ProblemDetailsPage() {
+interface ProblemDetailsPageProps {
+  basePath: "/admin/problems" | "/company/problems";
+}
+
+export default function ProblemDetailsPage({
+  basePath,
+}: ProblemDetailsPageProps) {
   const params = useParams<{ id: string }>();
   const problemId = params.id;
   const router = useRouter();
@@ -36,15 +42,17 @@ export default function ProblemDetailsPage() {
     return (
       <div className="container mx-auto px-4 py-10">
         <div className="flex min-h-[400px] flex-col items-center justify-center gap-4">
-          <p className="text-destructive">Failed to load problem.</p>
+          <p className="text-destructive">
+            Failed to load problem.
+          </p>
 
-          <Button variant="outline">
-            <Link href="/">
-              <div className="flex gap-1">
-                <ArrowLeft />
-                Go Back Home
-              </div>
-            </Link>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => router.push(basePath)}
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Go Back
           </Button>
         </div>
       </div>
@@ -57,21 +65,27 @@ export default function ProblemDetailsPage() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <Button  variant="outline" onClick={() => router.back()}>
-          <div className="flex gap-1">
-            <ArrowLeft />
-            Back
-          </div>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push(basePath)}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back
         </Button>
 
-        <div className="flex mt-4 flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="mt-4 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div>
             <div className="mb-3 flex flex-wrap items-center gap-2">
               <Badge>{problem.type}</Badge>
 
-              <Badge variant="secondary">{problem.difficulty}</Badge>
+              <Badge variant="secondary">
+                {problem.difficulty}
+              </Badge>
 
-              <Badge variant="outline">{problem.category}</Badge>
+              <Badge variant="outline">
+                {problem.category}
+              </Badge>
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
@@ -82,13 +96,6 @@ export default function ProblemDetailsPage() {
               Problem ID: {problem.id}
             </p>
           </div>
-
-          {/* <Button>
-            <Link href={`/problems/${problem.id}/solve`}>
-              <Code2 className="mr-2 h-4 w-4" />
-              Solve Problem
-            </Link>
-          </Button> */}
         </div>
       </div>
 
@@ -98,7 +105,9 @@ export default function ProblemDetailsPage() {
         <div className="space-y-6">
           {/* Description */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">Problem Description</h2>
+            <h2 className="mb-4 text-xl font-semibold">
+              Problem Description
+            </h2>
 
             <p className="whitespace-pre-wrap leading-7 text-muted-foreground">
               {problem.description}
@@ -107,7 +116,9 @@ export default function ProblemDetailsPage() {
 
           {/* Input Format */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">Input Format</h2>
+            <h2 className="mb-4 text-xl font-semibold">
+              Input Format
+            </h2>
 
             <p className="whitespace-pre-wrap leading-7 text-muted-foreground">
               {problem.inputFormat}
@@ -116,7 +127,9 @@ export default function ProblemDetailsPage() {
 
           {/* Output Format */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">Output Format</h2>
+            <h2 className="mb-4 text-xl font-semibold">
+              Output Format
+            </h2>
 
             <p className="whitespace-pre-wrap leading-7 text-muted-foreground">
               {problem.outputFormat}
@@ -125,7 +138,9 @@ export default function ProblemDetailsPage() {
 
           {/* Constraints */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">Constraints</h2>
+            <h2 className="mb-4 text-xl font-semibold">
+              Constraints
+            </h2>
 
             <p className="whitespace-pre-wrap leading-7 text-muted-foreground">
               {problem.constraints}
@@ -137,16 +152,22 @@ export default function ProblemDetailsPage() {
         <aside className="space-y-6">
           {/* Problem Information */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-semibold">Problem Information</h2>
+            <h2 className="mb-5 text-lg font-semibold">
+              Problem Information
+            </h2>
 
             <div className="space-y-5">
               <div className="flex items-center gap-3">
                 <Clock className="h-5 w-5 text-muted-foreground" />
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Time Limit</p>
+                  <p className="text-sm text-muted-foreground">
+                    Time Limit
+                  </p>
 
-                  <p className="font-medium">{problem.timeLimit} ms</p>
+                  <p className="font-medium">
+                    {problem.timeLimit} ms
+                  </p>
                 </div>
               </div>
 
@@ -154,9 +175,13 @@ export default function ProblemDetailsPage() {
                 <Cpu className="h-5 w-5 text-muted-foreground" />
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Memory Limit</p>
+                  <p className="text-sm text-muted-foreground">
+                    Memory Limit
+                  </p>
 
-                  <p className="font-medium">{problem.memoryLimit} MB</p>
+                  <p className="font-medium">
+                    {problem.memoryLimit} MB
+                  </p>
                 </div>
               </div>
 
@@ -164,9 +189,13 @@ export default function ProblemDetailsPage() {
                 <UserRound className="h-5 w-5 text-muted-foreground" />
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Created By</p>
+                  <p className="text-sm text-muted-foreground">
+                    Created By
+                  </p>
 
-                  <p className="font-medium">{problem.createdBy.name}</p>
+                  <p className="font-medium">
+                    {problem.createdBy.name}
+                  </p>
 
                   <p className="text-xs text-muted-foreground">
                     {problem.createdBy.email}
@@ -178,9 +207,13 @@ export default function ProblemDetailsPage() {
                 <Code2 className="h-5 w-5 text-muted-foreground" />
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Type</p>
+                  <p className="text-sm text-muted-foreground">
+                    Type
+                  </p>
 
-                  <p className="font-medium">{problem.type}</p>
+                  <p className="font-medium">
+                    {problem.type}
+                  </p>
                 </div>
               </div>
             </div>
@@ -188,14 +221,18 @@ export default function ProblemDetailsPage() {
 
           {/* Dates */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-semibold">Dates</h2>
+            <h2 className="mb-5 text-lg font-semibold">
+              Dates
+            </h2>
 
             <div className="space-y-5">
               <div className="flex items-center gap-3">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Created At</p>
+                  <p className="text-sm text-muted-foreground">
+                    Created At
+                  </p>
 
                   <p className="text-sm font-medium">
                     {new Date(problem.createdAt).toLocaleString()}
@@ -207,7 +244,9 @@ export default function ProblemDetailsPage() {
                 <Calendar className="h-5 w-5 text-muted-foreground" />
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Last Updated</p>
+                  <p className="text-sm text-muted-foreground">
+                    Last Updated
+                  </p>
 
                   <p className="text-sm font-medium">
                     {new Date(problem.updatedAt).toLocaleString()}

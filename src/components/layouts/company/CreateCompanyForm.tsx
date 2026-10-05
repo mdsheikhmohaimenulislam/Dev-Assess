@@ -46,9 +46,11 @@ export default function CreateCompanyForm({
     }));
   };
 
-  const handleCancel = () => {
-    router.push(`${basePath}/company`);
-  };
+const handleCancel = () => {
+//   router.push(`${basePath}/dashboard`);
+
+  router.back();
+};
 
   const handleSubmit = (
     event: React.FormEvent<HTMLFormElement>,
@@ -190,7 +192,7 @@ export default function CreateCompanyForm({
           onClick={handleCancel}
           disabled={createCompany.isPending}
         >
-          Cancel
+          Back
         </Button>
       </div>
     </form>

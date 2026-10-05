@@ -78,27 +78,27 @@ export default function ProblemManagementTable({
     setIsEditOpen(true);
   };
 
-const handleUpdate = () => {
-  if (!selectedProblem) return;
+  const handleUpdate = () => {
+    if (!selectedProblem) return;
 
-  const updatedProblem = {
-    ...formData,
-    timeLimit: Number(formData.timeLimit),
-    memoryLimit: Number(formData.memoryLimit),
-  };
+    const updatedProblem = {
+      ...formData,
+      timeLimit: Number(formData.timeLimit),
+      memoryLimit: Number(formData.memoryLimit),
+    };
 
-  updateProblemMutation(
-    {
-      id: selectedProblem.id,
-      payload: updatedProblem,
-    },
-    {
-      onSuccess: () => {
-        setIsEditOpen(false);
+    updateProblemMutation(
+      {
+        id: selectedProblem.id,
+        payload: updatedProblem,
       },
-    },
-  );
-};
+      {
+        onSuccess: () => {
+          setIsEditOpen(false);
+        },
+      },
+    );
+  };
 
   const handleDelete = (id: string) => {
     deleteProblemMutation(id, {
@@ -201,11 +201,15 @@ const handleUpdate = () => {
                       <td className="px-4 py-4">
                         <div className="flex justify-end gap-2">
                           {/* View */}
-                          <Button size="icon" variant="outline" title="View">
-                            <Link href={`${basePath}/${problem.id}`}>
-                              <Eye />
-                            </Link>
-                          </Button>
+                          {basePath === "/company/problems" ? (
+                            ""
+                          ) : (
+                            <Button size="icon" variant="outline" title="View">
+                              <Link href={`${basePath}/${problem.id}`}>
+                                <Eye />
+                              </Link>
+                            </Button>
+                          )}
 
                           {/* Edit */}
                           <Button

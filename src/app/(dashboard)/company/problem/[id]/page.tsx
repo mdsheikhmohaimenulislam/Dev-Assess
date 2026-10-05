@@ -1,17 +1,9 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import ProblemDetailsPage from "@/app/(dashboard)/_components/problem/[id]/page";
 
-export default function AdminProblemDetailsPage() {
-  const params = useParams<{ id: string }>();
 
-  const id = params.id;
 
-  return (
-    <div>
-      <h1>Problem Details</h1>
-
-      <p>Problem ID: {id}</p>
-    </div>
-  );
+export default function CompanyProblemDetailsPage() {
+  return <ProblemDetailsPage basePath="/company/problems" />;
 }

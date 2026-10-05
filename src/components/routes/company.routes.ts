@@ -30,7 +30,7 @@ export const companyRoutes = [
         url: `${prefix}/candidates`,
       },
       {
-        title: "Problems",
+        title: "Problem",
         url: `${prefix}/problems`,
       },
       {
