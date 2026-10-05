@@ -12,6 +12,10 @@ export const companyRoutes = [
         title: "Assessments",
         url: `${prefix}/assessments`,
       },
+      {
+        title: "Create Assessment",
+        url: `${prefix}/create`,
+      },
     ],
   },
   {
