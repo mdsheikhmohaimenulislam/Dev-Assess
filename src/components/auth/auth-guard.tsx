@@ -1,43 +1,43 @@
 
-// "use client";
+"use client";
 
 
-// import { useRouter } from "next/navigation";
-// import { useEffect, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, type ReactNode } from "react";
 
 
-// import { useGetMe } from "../hooks/auth.hook";
-// import AuthLoading from "./auth-loading";
+import { useGetMe } from "../hooks/auth.hook";
+import AuthLoading from "./auth-loading";
 
-// interface AuthGuardProps {
-//   children: ReactNode;
-// }
+interface AuthGuardProps {
+  children: ReactNode;
+}
 
-// export default function AuthGuard({ children }: AuthGuardProps) {
-//   const router = useRouter();
+export default function AuthGuard({ children }: AuthGuardProps) {
+  const router = useRouter();
 
-//   const { data, isPending, isError } = useGetMe();
+  const { data, isPending, isError } = useGetMe();
 
-//   const user = data?.data;
+  const user = data?.data;
 
-//   useEffect(() => {
-//     if (isPending) {
-//       return;
-//     }
+  useEffect(() => {
+    if (isPending) {
+      return;
+    }
 
-//     if (isError || !user) {
-//       router.replace("/login");
-//     }
-//   }, [isPending, isError, user, router]);
+    if (isError || !user) {
+      router.replace("/login");
+    }
+  }, [isPending, isError, user, router]);
 
-//   if (isPending) {
-//     return <AuthLoading />;
-//   }
+  if (isPending) {
+    return <AuthLoading />;
+  }
 
-//   if (isError || !user) {
-//     return <AuthLoading label="Redirecting..." />;
-//   }
+  if (isError || !user) {
+    return <AuthLoading label="Redirecting..." />;
+  }
 
-//   return <>{children}</>;
-// }
+  return <>{children}</>;
+}
 
