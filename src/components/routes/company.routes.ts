@@ -12,14 +12,15 @@ export const companyRoutes = [
         title: "Assessments",
         url: `${prefix}/assessments`,
       },
-      {
-        title: "Create Assessment Problem",
-        url: `${prefix}/assessmentProblem`,
-      },
+
       {
         title: "Create Assessment",
         url: `${prefix}/create`,
       },
+      //       {
+      //   title: "Assessment Problem",
+      //   url: `${prefix}/assessmentProblem`,
+      // },
     ],
   },
   {

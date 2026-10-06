@@ -26,6 +26,7 @@ import { Spinner } from "../ui/spinner";
 import { toast } from "../ui/toast";
 import GoogleAuthButton from "../auth/google-auth-button";
 import { useRouter } from "next/navigation";
+import { refresh } from "next/cache";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -62,7 +63,10 @@ login(loginData, {
       type: "success",
     });
 
+
+
     router.push("/");
+
   },
 
   onError: (error) => {
