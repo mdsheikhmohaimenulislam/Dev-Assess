@@ -57,6 +57,7 @@ export default function AssessmentManagement({
   const updateAssessmentStatus = useUpdateAssessmentStatus();
 
   const assessments = data?.data ?? [];
+
   console.log(assessments);
 
   /* ---------------- Status Styles ---------------- */

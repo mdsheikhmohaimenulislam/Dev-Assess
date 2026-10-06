@@ -107,6 +107,7 @@ const handleProblemChange = (value: string | null) => {
       },
       {
         onSuccess: () => {
+            console.log("MUTATION SUCCESS");
           toast.success(
             "Problem added to assessment successfully.",
           );
@@ -115,7 +116,7 @@ const handleProblemChange = (value: string | null) => {
           setMarks("");
           setOrder("");
 
-          onSuccess?.();
+          // onSuccess?.();
         },
 
         onError: (error) => {

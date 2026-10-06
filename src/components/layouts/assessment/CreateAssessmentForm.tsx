@@ -26,7 +26,15 @@ export default function CreateAssessmentForm({
   const { data: companyData, isLoading: companyLoading } =
     useGetMyCompany();
 
+
+
   const company = companyData?.data;
+
+
+
+
+// console.log(company);
+// console.log("Assessment count:",companyData?.data?._count?.assessments);
 
   const [formData, setFormData] = useState({
     title: "",
