@@ -4,7 +4,6 @@ import { useState } from "react";
 import {
   CalendarDays,
   FileText,
-
   Mail,
   Pencil,
   Phone,
@@ -20,9 +19,11 @@ import { useGetMyCandidate } from "@/components/hooks/candidate.hook";
 import { Button } from "@/components/ui/button";
 import CandidateProfileForm from "./CandidateProfileForm";
 import CandidateProfileSkeleton from "./CandidateProfileSkeleton";
+import DeleteCandidateProfile from "./DeleteCandidateProfile";
 
 export default function CandidateProfile() {
   const [isEditing, setIsEditing] = useState(false);
+const [isDeleted, setIsDeleted] = useState(false);
 
   const {
     data: userData,
@@ -30,10 +31,8 @@ export default function CandidateProfile() {
     isError: userError,
   } = useGetMe();
 
-  const {
-    data: candidateData,
-    isLoading: candidateLoading,
-  } = useGetMyCandidate();
+  const { data: candidateData, isLoading: candidateLoading } =
+    useGetMyCandidate();
 
   const profile = userData?.data;
   const candidate = candidateData?.data;
@@ -45,9 +44,7 @@ export default function CandidateProfile() {
   if (userError || !profile) {
     return (
       <section className="flex min-h-screen items-center justify-center px-4">
-        <p className="text-muted-foreground">
-          Profile not found.
-        </p>
+        <p className="text-muted-foreground">Profile not found.</p>
       </section>
     );
   }
@@ -66,19 +63,14 @@ export default function CandidateProfile() {
         <div className="mx-auto max-w-4xl">
           <div className="mb-8 flex items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold">
-                Edit Candidate Profile
-              </h1>
+              <h1 className="text-3xl font-bold">Edit Candidate Profile</h1>
 
               <p className="mt-2 text-muted-foreground">
                 Update your professional information.
               </p>
             </div>
 
-            <Button
-              variant="outline"
-              onClick={() => setIsEditing(false)}
-            >
+            <Button variant="outline" onClick={() => setIsEditing(false)}>
               Cancel
             </Button>
           </div>
@@ -100,9 +92,7 @@ export default function CandidateProfile() {
         {/* Page Header */}
         <div className="mb-8 flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold">
-              My Profile
-            </h1>
+            <h1 className="text-3xl font-bold">My Profile</h1>
 
             <p className="mt-2 text-muted-foreground">
               View and manage your account information.
@@ -134,9 +124,7 @@ export default function CandidateProfile() {
               </div>
 
               <div className="text-center sm:text-left">
-                <h2 className="text-2xl font-semibold">
-                  {profile.name}
-                </h2>
+                <h2 className="text-2xl font-semibold">{profile.name}</h2>
 
                 <p className="mt-1 flex items-center justify-center gap-2 text-muted-foreground sm:justify-start">
                   <Mail className="h-4 w-4" />
@@ -158,41 +146,24 @@ export default function CandidateProfile() {
 
           {/* Account Information */}
           <div className="border-b p-6 sm:p-8">
-            <h3 className="mb-6 text-xl font-semibold">
-              Account Information
-            </h3>
+            <h3 className="mb-6 text-xl font-semibold">Account Information</h3>
 
             <div className="grid gap-6 sm:grid-cols-2">
-              <ProfileItem
-                label="User ID"
-                value={profile.id}
-                breakAll
-              />
+              <ProfileItem label="User ID" value={profile.id} breakAll />
 
-              <ProfileItem
-                label="Full Name"
-                value={profile.name}
-              />
+              <ProfileItem label="Full Name" value={profile.name} />
 
-              <ProfileItem
-                label="Email Address"
-                value={profile.email}
-              />
+              <ProfileItem label="Email Address" value={profile.email} />
 
               <ProfileItem
                 label="Authentication Provider"
                 value={profile.authProvider}
               />
 
-              <ProfileItem
-                label="Role"
-                value={profile.role}
-              />
+              <ProfileItem label="Role" value={profile.role} />
 
               <div>
-                <p className="text-sm text-muted-foreground">
-                  Account Status
-                </p>
+                <p className="text-sm text-muted-foreground">Account Status</p>
 
                 <p className="mt-1 flex items-center gap-2 font-medium text-green-600">
                   <ShieldCheck className="h-4 w-4" />
@@ -202,26 +173,16 @@ export default function CandidateProfile() {
 
               <ProfileItem
                 label="Email Verification"
-                value={
-                  profile.emailVerified
-                    ? "Verified"
-                    : "Not Verified"
-                }
+                value={profile.emailVerified ? "Verified" : "Not Verified"}
               />
 
               <ProfileItem
                 label="Google Account"
-                value={
-                  profile.googleId
-                    ? "Connected"
-                    : "Not Connected"
-                }
+                value={profile.googleId ? "Connected" : "Not Connected"}
               />
 
               <div>
-                <p className="text-sm text-muted-foreground">
-                  Account Created
-                </p>
+                <p className="text-sm text-muted-foreground">Account Created</p>
 
                 <p className="mt-1 flex items-center gap-2 font-medium">
                   <CalendarDays className="h-4 w-4" />
@@ -230,9 +191,7 @@ export default function CandidateProfile() {
               </div>
 
               <div>
-                <p className="text-sm text-muted-foreground">
-                  Last Updated
-                </p>
+                <p className="text-sm text-muted-foreground">Last Updated</p>
 
                 <p className="mt-1 flex items-center gap-2 font-medium">
                   <CalendarDays className="h-4 w-4" />
@@ -258,9 +217,15 @@ export default function CandidateProfile() {
 
           {/* Candidate Information */}
           <div className="p-6 sm:p-8">
-            <h3 className="mb-6 text-xl font-semibold">
-              Candidate Information
-            </h3>
+            <div className="flex justify-between items-center">
+              <h3 className=" mb-6 text-xl font-semibold">
+                Candidate Information
+              </h3>
+
+     {candidate && (
+    <DeleteCandidateProfile candidateId={candidate.id} />
+  )}
+            </div>
 
             {!candidate ? (
               <div className="rounded-lg border border-dashed p-6 text-center">
@@ -268,10 +233,7 @@ export default function CandidateProfile() {
                   Candidate profile has not been created yet.
                 </p>
 
-                <Button
-                  className="mt-4"
-                  onClick={() => setIsEditing(true)}
-                >
+                <Button className="mt-4" onClick={() => setIsEditing(true)}>
                   Create Candidate Profile
                 </Button>
               </div>
@@ -279,9 +241,7 @@ export default function CandidateProfile() {
               <div className="grid gap-6 sm:grid-cols-2">
                 {/* Phone */}
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    Phone Number
-                  </p>
+                  <p className="text-sm text-muted-foreground">Phone Number</p>
 
                   <p className="mt-1 flex items-center gap-2 font-medium">
                     <Phone className="h-4 w-4" />
@@ -291,9 +251,7 @@ export default function CandidateProfile() {
 
                 {/* Bio */}
                 <div className="sm:col-span-2">
-                  <p className="text-sm text-muted-foreground">
-                    Bio
-                  </p>
+                  <p className="text-sm text-muted-foreground">Bio</p>
 
                   <p className="mt-1 whitespace-pre-wrap font-medium">
                     {candidate.bio || "No bio added yet."}
@@ -302,9 +260,7 @@ export default function CandidateProfile() {
 
                 {/* GitHub */}
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    GitHub
-                  </p>
+                  <p className="text-sm text-muted-foreground">GitHub</p>
 
                   {candidate.githubUrl ? (
                     <a
@@ -317,17 +273,13 @@ export default function CandidateProfile() {
                       View GitHub Profile
                     </a>
                   ) : (
-                    <p className="mt-1 font-medium">
-                      Not provided
-                    </p>
+                    <p className="mt-1 font-medium">Not provided</p>
                   )}
                 </div>
 
                 {/* LinkedIn */}
                 <div>
-                  <p className="text-sm text-muted-foreground">
-                    LinkedIn
-                  </p>
+                  <p className="text-sm text-muted-foreground">LinkedIn</p>
 
                   {candidate.linkedinUrl ? (
                     <a
@@ -340,17 +292,13 @@ export default function CandidateProfile() {
                       View LinkedIn Profile
                     </a>
                   ) : (
-                    <p className="mt-1 font-medium">
-                      Not provided
-                    </p>
+                    <p className="mt-1 font-medium">Not provided</p>
                   )}
                 </div>
 
                 {/* Resume */}
                 <div className="sm:col-span-2">
-                  <p className="text-sm text-muted-foreground">
-                    Resume
-                  </p>
+                  <p className="text-sm text-muted-foreground">Resume</p>
 
                   {candidate.resumeUrl ? (
                     <a
@@ -363,9 +311,7 @@ export default function CandidateProfile() {
                       View Resume
                     </a>
                   ) : (
-                    <p className="mt-1 font-medium">
-                      Not provided
-                    </p>
+                    <p className="mt-1 font-medium">Not provided</p>
                   )}
                 </div>
               </div>
@@ -383,22 +329,12 @@ interface ProfileItemProps {
   breakAll?: boolean;
 }
 
-function ProfileItem({
-  label,
-  value,
-  breakAll = false,
-}: ProfileItemProps) {
+function ProfileItem({ label, value, breakAll = false }: ProfileItemProps) {
   return (
     <div>
-      <p className="text-sm text-muted-foreground">
-        {label}
-      </p>
+      <p className="text-sm text-muted-foreground">{label}</p>
 
-      <p
-        className={`mt-1 font-medium ${
-          breakAll ? "break-all text-sm" : ""
-        }`}
-      >
+      <p className={`mt-1 font-medium ${breakAll ? "break-all text-sm" : ""}`}>
         {value}
       </p>
     </div>
