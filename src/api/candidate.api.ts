@@ -1,6 +1,5 @@
 import apiClient from "@/lib/apiClient";
 
-
 export interface CreateCandidatePayload {
   phone: string;
   bio?: string;
@@ -16,6 +15,12 @@ export interface UpdateCandidatePayload {
   linkedinUrl?: string;
   resumeUrl?: string;
 }
+export interface CandidateUser {
+  id: string;
+  name: string;
+  email: string;
+  imageUrl?: string | null;
+}
 
 export interface Candidate {
   id: string;
@@ -27,6 +32,7 @@ export interface Candidate {
   resumeUrl?: string | null;
   createdAt: string;
   updatedAt: string;
+  user?: CandidateUser;
 }
 
 export interface CandidateResponse {
@@ -66,10 +72,7 @@ export function getCandidateById(id: string) {
 }
 
 // Update candidate profile
-export function updateCandidate(
-  id: string,
-  payload: UpdateCandidatePayload,
-) {
+export function updateCandidate(id: string, payload: UpdateCandidatePayload) {
   return apiClient<CandidateResponse>(`/candidate/${id}`, {
     method: "PATCH",
     body: payload,
@@ -80,5 +83,11 @@ export function updateCandidate(
 export function deleteCandidate(id: string) {
   return apiClient<CandidateResponse>(`/candidate/${id}`, {
     method: "DELETE",
+  });
+}
+
+export function getAllCandidates() {
+  return apiClient("/candidate", {
+    method: "GET",
   });
 }

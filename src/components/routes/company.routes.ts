@@ -17,10 +17,10 @@ export const companyRoutes = [
         title: "Create Assessment",
         url: `${prefix}/create`,
       },
-      //       {
-      //   title: "Assessment Problem",
-      //   url: `${prefix}/assessmentProblem`,
-      // },
+      {
+        title: "Create invitation",
+        url: `${prefix}/invitation`,
+      },
     ],
   },
   {

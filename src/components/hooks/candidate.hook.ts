@@ -1,11 +1,22 @@
-import { createCandidate, CreateCandidatePayload, deleteCandidate, getCandidateById, getMyCandidate, updateCandidate, UpdateCandidatePayload } from "@/api/candidate.api";
 import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+  createCandidate,
+  CreateCandidatePayload,
+  deleteCandidate,
+  getAllCandidates,
+  getCandidateById,
+  getMyCandidate,
+  updateCandidate,
+  UpdateCandidatePayload,
+} from "@/api/candidate.api";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-
+export function useGetAllCandidates() {
+  return useQuery({
+    queryKey: ["candidates"],
+    queryFn: getAllCandidates,
+    retry: false,
+  });
+}
 
 // Get my candidate profile
 export function useGetMyCandidate() {
@@ -31,8 +42,7 @@ export function useCreateCandidate() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (payload: CreateCandidatePayload) =>
-      createCandidate(payload),
+    mutationFn: (payload: CreateCandidatePayload) => createCandidate(payload),
 
     onSuccess: () => {
       queryClient.invalidateQueries({

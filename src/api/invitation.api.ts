@@ -1,17 +1,14 @@
 import apiClient from "@/lib/apiClient";
 
-
-
-export type InvitationStatus =
-  | "PENDING"
-  | "ACCEPTED"
-  | "REJECTED"
-  | "EXPIRED";
+export type InvitationStatus = "PENDING" | "ACCEPTED" | "REJECTED" | "EXPIRED";
 
 export interface CreateInvitationPayload {
   candidateId: string;
   assessmentId: string;
   message?: string;
+  userId: string;
+  email: string;
+  expiresAt: string;
 }
 
 export interface Invitation {
@@ -60,9 +57,7 @@ export interface InvitationListResponse {
   data: Invitation[];
 }
 
-export function createInvitation(
-  payload: CreateInvitationPayload,
-) {
+export function createInvitation(payload: CreateInvitationPayload) {
   return apiClient<InvitationResponse>("/invitations", {
     method: "POST",
     body: payload,
@@ -82,28 +77,19 @@ export function getInvitationById(id: string) {
 }
 
 export function acceptInvitation(id: string) {
-  return apiClient<InvitationResponse>(
-    `/invitations/accept/${id}`,
-    {
-      method: "PATCH",
-    },
-  );
+  return apiClient<InvitationResponse>(`/invitations/accept/${id}`, {
+    method: "PATCH",
+  });
 }
 
 export function rejectInvitation(id: string) {
-  return apiClient<InvitationResponse>(
-    `/invitations/reject/${id}`,
-    {
-      method: "PATCH",
-    },
-  );
+  return apiClient<InvitationResponse>(`/invitations/reject/${id}`, {
+    method: "PATCH",
+  });
 }
 
 export function deleteInvitation(id: string) {
-  return apiClient<InvitationResponse>(
-    `/invitations/${id}`,
-    {
-      method: "DELETE",
-    },
-  );
+  return apiClient<InvitationResponse>(`/invitations/${id}`, {
+    method: "DELETE",
+  });
 }
