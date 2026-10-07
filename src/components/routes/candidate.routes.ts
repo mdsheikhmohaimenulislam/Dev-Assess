@@ -22,6 +22,10 @@ export const candidateRoutes = [
         url: `${prefix}/attempts`,
       },
       {
+        title: "Invitations",
+        url: `${prefix}/invitations`,
+      },
+      {
         title: "Results",
         url: `${prefix}/results`,
       },

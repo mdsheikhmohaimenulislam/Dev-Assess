@@ -2,5 +2,5 @@ import InvitationManagement from "@/components/layouts/invitation/InvitationMana
 
 
 export default function CompanyInvitationsPage() {
-  return<InvitationManagement basePath="/company/invitations" />;
+  return<InvitationManagement      basePath="/company/invitations" />;
 }

@@ -1,19 +1,15 @@
-
 "use client";
 
-import { Check, Pencil, Trash2, X } from "lucide-react";
+import { Check, Trash2, X } from "lucide-react";
 
+import { Invitation } from "@/api/invitation.api";
 import {
   useAcceptInvitation,
   useDeleteInvitation,
   useRejectInvitation,
 } from "@/components/hooks/invitation.hook";
-
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
-import { Invitation } from "@/api/invitation.api";
-
-
 
 interface InvitationActionsProps {
   invitation: Invitation;
@@ -38,6 +34,7 @@ export default function InvitationActions({
           type: "success",
         });
       },
+
       onError: (error) => {
         toast.add({
           title: "Accept Failed",
@@ -59,6 +56,7 @@ export default function InvitationActions({
           type: "success",
         });
       },
+
       onError: (error) => {
         toast.add({
           title: "Reject Failed",
@@ -80,6 +78,7 @@ export default function InvitationActions({
           type: "success",
         });
       },
+
       onError: (error) => {
         toast.add({
           title: "Delete Failed",
@@ -91,6 +90,10 @@ export default function InvitationActions({
     });
   };
 
+  const isAccepting = acceptInvitation.isPending;
+  const isRejecting = rejectInvitation.isPending;
+  const isDeleting = deleteInvitation.isPending;
+
   if (role === "CANDIDATE") {
     if (invitation.status !== "PENDING") {
       return null;
@@ -99,28 +102,24 @@ export default function InvitationActions({
     return (
       <div className="flex items-center justify-end gap-2">
         <Button
+          type="button"
           size="sm"
           onClick={handleAccept}
-          disabled={
-            acceptInvitation.isPending ||
-            rejectInvitation.isPending
-          }
+          disabled={isAccepting || isRejecting}
         >
           <Check className="size-4" />
-          Accept
+          {isAccepting ? "Accepting..." : "Accept"}
         </Button>
 
         <Button
+          type="button"
           size="sm"
           variant="outline"
           onClick={handleReject}
-          disabled={
-            acceptInvitation.isPending ||
-            rejectInvitation.isPending
-          }
+          disabled={isAccepting || isRejecting}
         >
           <X className="size-4" />
-          Reject
+          {isRejecting ? "Rejecting..." : "Reject"}
         </Button>
       </div>
     );
@@ -128,21 +127,13 @@ export default function InvitationActions({
 
   return (
     <div className="flex items-center justify-end gap-2">
-      {/* <Button
-        size="icon"
-        variant="ghost"
-        title="Edit Invitation"
-        disabled
-      >
-        <Pencil className="size-4" />
-      </Button> */}
-
       <Button
+        type="button"
         size="icon"
         variant="ghost"
         title="Delete Invitation"
         onClick={handleDelete}
-        disabled={deleteInvitation.isPending}
+        disabled={isDeleting}
       >
         <Trash2 className="size-4 text-destructive" />
       </Button>

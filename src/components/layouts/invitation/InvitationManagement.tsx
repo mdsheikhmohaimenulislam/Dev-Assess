@@ -1,13 +1,9 @@
-
 "use client";
 
 import { useState } from "react";
-import { Plus, RefreshCw } from "lucide-react";
+import { Plus } from "lucide-react";
 
-import {
-  useGetInvitations,
-} from "@/components/hooks/invitation.hook";
-
+import { useGetInvitations } from "@/components/hooks/invitation.hook";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,10 +13,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Spinner } from "@/components/ui/spinner";
-import InvitationTable from "./InvitationTable";
+
 import CreateInvitationForm from "./CreateInvitationForm";
-
-
+import InvitationTable from "./InvitationTable";
 
 interface InvitationManagementProps {
   basePath: string;
@@ -33,10 +28,7 @@ export default function InvitationManagement({
 }: InvitationManagementProps) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-  const { data, isLoading, isError, refetch, isFetching } =
-    useGetInvitations();
-
-  const invitations = data?.data ?? [];
+  const { data, isLoading, isError } = useGetInvitations();
 
   const role: UserRole = basePath.startsWith("/candidate")
     ? "CANDIDATE"
@@ -44,85 +36,76 @@ export default function InvitationManagement({
       ? "COMPANY"
       : "ADMIN";
 
-  const canCreate =
-    role === "ADMIN" || role === "COMPANY";
+  const invitations = data?.data ?? [];
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-100 items-center justify-center">
-        <Spinner className="size-6" />
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="rounded-lg border border-dashed p-10 text-center">
-        <h3 className="text-lg font-semibold">
-          Failed to load invitations
-        </h3>
-
-        <p className="mt-2 text-sm text-muted-foreground">
-          Something went wrong while loading invitations.
-        </p>
-
-        <Button
-          className="mt-4"
-          variant="outline"
-          onClick={() => refetch()}
-        >
-          <RefreshCw className="size-4" />
-          Try Again
-        </Button>
-      </div>
-    );
-  }
+  const canCreateInvitation = role !== "CANDIDATE";
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">
+          <h1 className="text-2xl font-semibold tracking-tight">
             Invitations
           </h1>
 
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             {role === "CANDIDATE"
-              ? "View and manage your assessment invitations."
+              ? "View your assessment invitations."
               : "Manage assessment invitations sent to candidates."}
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => refetch()}
-            disabled={isFetching}
-            title="Refresh invitations"
-          >
-            <RefreshCw
-              className={`size-4 ${
-                isFetching ? "animate-spin" : ""
-              }`}
-            />
+        {/* Create Invitation */}
+        {canCreateInvitation && (
+          <Button onClick={() => setIsCreateOpen(true)}>
+            <Plus className="size-4" />
+            Create Invitation
           </Button>
-
-          {canCreate && (
-            <Button onClick={() => setIsCreateOpen(true)}>
-              <Plus className="size-4" />
-              Create Invitation
-            </Button>
-          )}
-        </div>
+        )}
       </div>
 
-      <InvitationTable
-        invitations={invitations}
-        role={role}
-      />
+      {/* Loading */}
+      {isLoading && (
+        <div className="flex min-h-50 items-center justify-center rounded-lg border">
+          <Spinner />
+        </div>
+      )}
 
-      {canCreate && (
+      {/* Error */}
+      {isError && !isLoading && (
+        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-6 text-center">
+          <p className="text-sm text-destructive">
+            Failed to load invitations.
+          </p>
+        </div>
+      )}
+
+      {/* Empty */}
+      {!isLoading && !isError && invitations.length === 0 && (
+        <div className="rounded-lg border border-dashed p-10 text-center">
+          <h3 className="text-sm font-medium">
+            No Invitations Found
+          </h3>
+
+          <p className="mt-1 text-sm text-muted-foreground">
+            {role === "CANDIDATE"
+              ? "You do not have any assessment invitations at the moment."
+              : "There are no invitations available at the moment."}
+          </p>
+        </div>
+      )}
+
+      {/* Invitation Table */}
+      {!isLoading && !isError && invitations.length > 0 && (
+        <InvitationTable
+          invitations={invitations}
+          role={role}
+        />
+      )}
+
+      {/* Create Invitation Dialog */}
+      {canCreateInvitation && (
         <Dialog
           open={isCreateOpen}
           onOpenChange={setIsCreateOpen}
@@ -134,8 +117,7 @@ export default function InvitationManagement({
               </DialogTitle>
 
               <DialogDescription>
-                Select a candidate and assessment to send an
-                invitation.
+                Send an assessment invitation to a candidate.
               </DialogDescription>
             </DialogHeader>
 
