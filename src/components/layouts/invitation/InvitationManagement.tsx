@@ -30,6 +30,8 @@ export default function InvitationManagement({
 
   const { data, isLoading, isError } = useGetInvitations();
 
+  console.log(data);
+
   const role: UserRole = basePath.startsWith("/candidate")
     ? "CANDIDATE"
     : basePath.startsWith("/company")

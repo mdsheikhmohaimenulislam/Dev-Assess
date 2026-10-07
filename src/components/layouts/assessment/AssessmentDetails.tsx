@@ -23,7 +23,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 interface AssessmentDetailsProps {
-  basePath: "/admin/assessments" | "/company/assessments";
+  basePath: "/admin/assessments" | "/company/assessments" | "/candidate/assessments";
 }
 
 type AssessmentStatus =

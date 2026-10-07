@@ -39,7 +39,7 @@ type AssessmentStatus =
   | "CANCELLED";
 
 interface AssessmentManagementProps {
-  basePath: "/admin/assessments" | "/company/assessments";
+  basePath: "/admin/assessments" | "/company/assessments" | "/candidate/assessments";
 }
 
 export default function AssessmentManagement({
