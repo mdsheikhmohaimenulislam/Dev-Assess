@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "@/components/ui/toast";
+import { Candidate } from "@/api/candidate.api";
 
 interface CreateInvitationFormProps {
   onSuccess?: () => void;
@@ -177,7 +178,7 @@ export default function CreateInvitationForm({
                     field.handleChange(candidateId);
 
                     const selectedCandidate = candidates.find(
-                      (candidate) =>
+                      (candidate:Candidate) =>
                         candidate.id === candidateId,
                     );
 
@@ -203,7 +204,7 @@ export default function CreateInvitationForm({
                   </SelectTrigger>
 
                   <SelectContent>
-                    {candidates.map((candidate) => (
+                    {candidates.map((candidate:Candidate) => (
                       <SelectItem
                         key={candidate.id}
                         value={candidate.id}

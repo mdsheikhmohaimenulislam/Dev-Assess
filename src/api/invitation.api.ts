@@ -3,11 +3,9 @@ import apiClient from "@/lib/apiClient";
 export type InvitationStatus = "PENDING" | "ACCEPTED" | "REJECTED" | "EXPIRED";
 
 export interface CreateInvitationPayload {
-  candidateId: string;
   assessmentId: string;
-  message?: string;
+  candidateId: string;
   userId: string;
-  email: string;
   expiresAt: string;
 }
 
