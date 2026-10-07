@@ -128,14 +128,14 @@ export default function InvitationActions({
 
   return (
     <div className="flex items-center justify-end gap-2">
-      <Button
+      {/* <Button
         size="icon"
         variant="ghost"
         title="Edit Invitation"
         disabled
       >
         <Pencil className="size-4" />
-      </Button>
+      </Button> */}
 
       <Button
         size="icon"
