@@ -1,27 +1,64 @@
 import { z } from "zod";
 
-export const ProblemFormSchema = z.object({
-  title: z.string().min(1, "Title is required"),
+export const ProblemFormSchema = z
+  .object({
+    title: z.string().min(1, "Title is required"),
 
-  description: z.string().min(1, "Description is required"),
+    description: z
+      .string()
+      .min(1, "Description is required"),
 
-  type: z.literal("CODING"),
+    answer: z.string().min(1, "Answer is required"),
 
-  //   type: z.enum(["CODING", "MCQ", "WRITTEN"]),
+    marks: z
+      .number()
+      .min(0.1, "Marks must be at least 0.1"),
 
-  difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
+    difficulty: z.enum(["EASY", "MEDIUM", "HARD"]),
 
-  category: z.string().min(1, "Category is required"),
+    category: z
+      .string()
+      .min(1, "Category is required"),
 
-  inputFormat: z.string().min(1, "Input format is required"),
+    inputFormat: z
+      .string()
+      .min(1, "Input format is required"),
 
-  outputFormat: z.string().min(1, "Output format is required"),
+    outputFormat: z
+      .string()
+      .min(1, "Output format is required"),
 
-  constraints: z.string().min(1, "Constraints are required"),
+    constraints: z
+      .string()
+      .min(1, "Constraints are required"),
 
-  timeLimit: z.number().positive("Time limit must be greater than 0"),
+    timeLimit: z
+      .number()
+      .min(1, "Time limit must be at least 1"),
 
-  memoryLimit: z.number().positive("Memory limit must be greater than 0"),
-});
+    memoryLimit: z
+      .number()
+      .min(1, "Memory limit must be at least 1"),
 
-export type ProblemFormData = z.infer<typeof ProblemFormSchema>;
+    isPaid: z.boolean(),
+
+    price: z
+      .number()
+      .min(1, "Price must be at least 1")
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      if (data.isPaid) {
+        return data.price !== undefined && data.price > 0;
+      }
+
+      return true;
+    },
+    {
+      message: "Price is required for paid problems",
+      path: ["price"],
+    },
+  );
+
+export type ProblemFormValues = z.infer<typeof ProblemFormSchema>;

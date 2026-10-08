@@ -1,7 +1,6 @@
-
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { useProblems } from "@/components/hooks/problem.hook";
 
@@ -23,9 +22,7 @@ export default function ProblemsPage() {
   const [category, setCategory] = useState("ALL");
   const [difficulty, setDifficulty] = useState("ALL");
   const [type, setType] = useState("ALL");
-
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
   const [page, setPage] = useState(1);
 
   const limit = 9;
@@ -52,6 +49,19 @@ export default function ProblemsPage() {
   const problems = data?.data ?? [];
   const meta = data?.meta;
 
+  // Get unique categories from backend problems
+  const categories = useMemo(() => {
+    const uniqueCategories = new Set<string>();
+
+    problems.forEach((problem) => {
+      if (problem.category) {
+        uniqueCategories.add(problem.category);
+      }
+    });
+
+    return Array.from(uniqueCategories).sort();
+  }, [problems]);
+
   const clearFilters = () => {
     setSearch("");
     setCategory("ALL");
@@ -61,15 +71,23 @@ export default function ProblemsPage() {
     setPage(1);
   };
 
+  console.log("PROBLEMS:", problems);
+  console.log(
+    "CATEGORIES:",
+    problems.map((problem) => problem.category),
+  );
+
   return (
     <div className="min-h-screen bg-muted/30 p-6">
       <div className="mx-auto max-w-7xl space-y-6">
+        {/* Search & Filters */}
         <SearchFilters
           search={search}
           category={category}
           difficulty={difficulty}
           type={type}
           sortOrder={sortOrder}
+          categories={categories}
           setSearch={setSearch}
           setCategory={setCategory}
           setDifficulty={setDifficulty}
@@ -78,6 +96,7 @@ export default function ProblemsPage() {
           setPage={setPage}
         />
 
+        {/* Problems */}
         <Card>
           <CardHeader>
             <div className="flex items-center justify-between">

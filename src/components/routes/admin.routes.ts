@@ -16,10 +16,10 @@ export const adminRoutes = [
         title: "Companies",
         url: `${prefix}/company`,
       },
-      {
-        title: "Assessments",
-        url: `${prefix}/assessments`,
-      },
+      // {
+      //   title: "Assessments",
+      //   url: `${prefix}/assessments`,
+      // },
       {
         title: "Problems",
         url: `${prefix}/problems`,

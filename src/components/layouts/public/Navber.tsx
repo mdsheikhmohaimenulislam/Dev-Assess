@@ -12,7 +12,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const routes = [
-    { name: "Assessments", url: "/assessments" },
+    // { name: "Assessments", url: "/assessments" },
     { name: "Problems", url: "/problems" },
     { name: "Companies", url: "/companies" },
     { name: "About", url: "/about" },

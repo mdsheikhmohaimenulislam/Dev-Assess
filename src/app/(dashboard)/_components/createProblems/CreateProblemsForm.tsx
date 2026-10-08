@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+
 import {
   Select,
   SelectContent,
@@ -23,13 +25,21 @@ import {
 } from "@/components/ui/select";
 
 import { useCreateProblems } from "@/components/hooks/problem.hook";
-import { ProblemFormSchema } from "@/validation/problem.validation";
-import { ProblemFormValues } from "@/components/types";
-import { useRouter } from "next/navigation";
-import { toast } from "@/components/ui/toast";
 
-export default function CreateProblemsForm() {
+import { ProblemFormSchema } from "@/validation/problem.validation";
+
+import { toast } from "@/components/ui/toast";
+import { ProblemFormValues } from "@/components/types";
+
+interface ProblemDetailsPageProps {
+  basePath: "/admin/problems" | "/company/problems";
+}
+
+export default function CreateProblemsForm({
+  basePath,
+}: ProblemDetailsPageProps) {
   const { mutate, isPending } = useCreateProblems();
+
   const router = useRouter();
 
   const {
@@ -43,34 +53,49 @@ export default function CreateProblemsForm() {
     resolver: zodResolver(ProblemFormSchema),
 
     defaultValues: {
-      type: "CODING",
-      difficulty: "MEDIUM",
       title: "",
       description: "",
+      answer: "",
+      marks: 1,
+      difficulty: "MEDIUM",
       category: "",
       inputFormat: "",
       outputFormat: "",
       constraints: "",
       timeLimit: 1000,
       memoryLimit: 256,
+
+      isPaid: false,
+      price: undefined,
     },
   });
 
   const difficulty = watch("difficulty");
+  const isPaid = watch("isPaid");
 
   const onSubmit = (data: ProblemFormValues) => {
-    console.log("Form Data:", data);
+    const payload: ProblemFormValues = {
+      ...data,
+      price: data.isPaid ? data.price : undefined,
+    };
 
-    mutate(data, {
+    console.log("Form Data:", payload);
+
+    mutate(payload, {
       onSuccess: () => {
         toast.add({
           type: "success",
           description: "Problem created successfully!",
         });
+
         reset();
+
+        // router.push(basePath);
       },
+
       onError: (error) => {
         console.error("Create Problem Error:", error);
+
         toast.add({
           type: "error",
           description: "Failed to create problem.",
@@ -80,289 +105,404 @@ export default function CreateProblemsForm() {
   };
 
   return (
-    <div className="min-h-screen bg-muted/30 p-6">
-      <div className="mx-auto max-w-4xl space-y-6">
-        {/* Page Header */}
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Create Problem</h1>
+    <div className="mx-auto w-full max-w-4xl p-4 md:p-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Create Coding Problem</CardTitle>
 
-          <p className="mt-1 text-sm text-muted-foreground">
+          <CardDescription>
             Create a new coding problem for candidates.
-          </p>
-        </div>
+          </CardDescription>
+        </CardHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          {/* ================= BASIC INFORMATION ================= */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Basic Information</CardTitle>
+        <CardContent>
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-6"
+          >
+            {/* Title */}
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
 
-              <CardDescription>
-                Provide the basic information about this problem.
-              </CardDescription>
-            </CardHeader>
+              <Input
+                id="title"
+                placeholder="Enter problem title"
+                {...register("title")}
+              />
 
-            <CardContent className="space-y-5">
-              {/* Title */}
+              {errors.title && (
+                <p className="text-sm text-red-500">
+                  {errors.title.message}
+                </p>
+              )}
+            </div>
+
+            {/* Description */}
+            <div className="space-y-2">
+              <Label htmlFor="description">
+                Description
+              </Label>
+
+              <Textarea
+                id="description"
+                placeholder="Describe the problem"
+                rows={6}
+                {...register("description")}
+              />
+
+              {errors.description && (
+                <p className="text-sm text-red-500">
+                  {errors.description.message}
+                </p>
+              )}
+            </div>
+
+            {/* Answer */}
+            <div className="space-y-2">
+              <Label htmlFor="answer">Answer</Label>
+
+              <Textarea
+                id="answer"
+                placeholder="Enter expected answer / solution"
+                rows={6}
+                {...register("answer")}
+              />
+
+              {errors.answer && (
+                <p className="text-sm text-red-500">
+                  {errors.answer.message}
+                </p>
+              )}
+            </div>
+
+            {/* Marks + Difficulty */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Marks */}
               <div className="space-y-2">
-                <Label htmlFor="title">Problem Title</Label>
+                <Label htmlFor="marks">Marks</Label>
 
                 <Input
-                  id="title"
-                  placeholder="e.g. Maximum Subarray Sum"
-                  {...register("title")}
+                  id="marks"
+                  type="number"
+                  min="0.1"
+                  step="0.1"
+                  {...register("marks", {
+                    valueAsNumber: true,
+                  })}
                 />
 
-                {errors.title && (
-                  <p className="text-sm text-destructive">
-                    {errors.title.message}
+                {errors.marks && (
+                  <p className="text-sm text-red-500">
+                    {errors.marks.message}
                   </p>
                 )}
               </div>
 
-              {/* Description */}
+              {/* Difficulty */}
               <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="difficulty">
+                  Difficulty
+                </Label>
 
-                <Textarea
-                  id="description"
-                  rows={6}
-                  placeholder="Describe the problem..."
-                  {...register("description")}
+                <Select
+                  value={difficulty}
+                  onValueChange={(value) =>
+                    setValue(
+                      "difficulty",
+                      value as ProblemFormValues["difficulty"],
+                      {
+                        shouldValidate: true,
+                      },
+                    )
+                  }
+                >
+                  <SelectTrigger id="difficulty">
+                    <SelectValue placeholder="Select difficulty" />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    <SelectItem value="EASY">
+                      Easy
+                    </SelectItem>
+
+                    <SelectItem value="MEDIUM">
+                      Medium
+                    </SelectItem>
+
+                    <SelectItem value="HARD">
+                      Hard
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+
+                {errors.difficulty && (
+                  <p className="text-sm text-red-500">
+                    {errors.difficulty.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Category */}
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+
+              <Input
+                id="category"
+                placeholder="e.g. Array, String, Algorithm"
+                {...register("category")}
+              />
+
+              {errors.category && (
+                <p className="text-sm text-red-500">
+                  {errors.category.message}
+                </p>
+              )}
+            </div>
+
+            {/* Input Format */}
+            <div className="space-y-2">
+              <Label htmlFor="inputFormat">
+                Input Format
+              </Label>
+
+              <Textarea
+                id="inputFormat"
+                placeholder="Describe the input format"
+                rows={4}
+                {...register("inputFormat")}
+              />
+
+              {errors.inputFormat && (
+                <p className="text-sm text-red-500">
+                  {errors.inputFormat.message}
+                </p>
+              )}
+            </div>
+
+            {/* Output Format */}
+            <div className="space-y-2">
+              <Label htmlFor="outputFormat">
+                Output Format
+              </Label>
+
+              <Textarea
+                id="outputFormat"
+                placeholder="Describe the output format"
+                rows={4}
+                {...register("outputFormat")}
+              />
+
+              {errors.outputFormat && (
+                <p className="text-sm text-red-500">
+                  {errors.outputFormat.message}
+                </p>
+              )}
+            </div>
+
+            {/* Constraints */}
+            <div className="space-y-2">
+              <Label htmlFor="constraints">
+                Constraints
+              </Label>
+
+              <Textarea
+                id="constraints"
+                placeholder="Enter problem constraints"
+                rows={5}
+                {...register("constraints")}
+              />
+
+              {errors.constraints && (
+                <p className="text-sm text-red-500">
+                  {errors.constraints.message}
+                </p>
+              )}
+            </div>
+
+            {/* Time + Memory */}
+            <div className="grid gap-6 md:grid-cols-2">
+              {/* Time Limit */}
+              <div className="space-y-2">
+                <Label htmlFor="timeLimit">
+                  Time Limit (ms)
+                </Label>
+
+                <Input
+                  id="timeLimit"
+                  type="number"
+                  min="1"
+                  {...register("timeLimit", {
+                    valueAsNumber: true,
+                  })}
                 />
 
-                {errors.description && (
-                  <p className="text-sm text-destructive">
-                    {errors.description.message}
+                {errors.timeLimit && (
+                  <p className="text-sm text-red-500">
+                    {errors.timeLimit.message}
                   </p>
                 )}
               </div>
 
-              {/* Type / Difficulty / Category */}
-              <div className="grid gap-5 md:grid-cols-3">
-                {/* Type */}
-                <div className="space-y-2">
-                  <Label htmlFor="type">Type</Label>
+              {/* Memory Limit */}
+              <div className="space-y-2">
+                <Label htmlFor="memoryLimit">
+                  Memory Limit (MB)
+                </Label>
 
-                  <Input id="type" value="CODING" disabled />
+                <Input
+                  id="memoryLimit"
+                  type="number"
+                  min="1"
+                  {...register("memoryLimit", {
+                    valueAsNumber: true,
+                  })}
+                />
 
-                  {errors.type && (
-                    <p className="text-sm text-destructive">
-                      {errors.type.message}
-                    </p>
-                  )}
-                </div>
+                {errors.memoryLimit && (
+                  <p className="text-sm text-red-500">
+                    {errors.memoryLimit.message}
+                  </p>
+                )}
+              </div>
+            </div>
 
-                {/* Difficulty */}
-                <div className="space-y-2">
-                  <Label>Difficulty</Label>
+            {/* Problem Access */}
+            <div className="space-y-3">
+              <Label>Problem Access</Label>
 
-                  <Select
-                    value={difficulty}
-                    onValueChange={(value) =>
-                      setValue(
-                        "difficulty",
-                        value as ProblemFormValues["difficulty"],
-                        {
-                          shouldValidate: true,
-                          shouldDirty: true,
-                        },
-                      )
-                    }
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select difficulty" />
-                    </SelectTrigger>
+              <div className="grid gap-4 md:grid-cols-2">
+                {/* Free */}
+                <label
+                  className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition ${
+                    !isPaid
+                      ? "border-primary bg-primary/5"
+                      : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="problemAccess"
+                    value="free"
+                    checked={!isPaid}
+                    onChange={() => {
+                      setValue("isPaid", false, {
+                        shouldValidate: true,
+                      });
 
-                    <SelectContent>
-                      <SelectItem value="EASY">Easy</SelectItem>
-                      <SelectItem value="MEDIUM">Medium</SelectItem>
-                      <SelectItem value="HARD">Hard</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                  {errors.difficulty && (
-                    <p className="text-sm text-destructive">
-                      {errors.difficulty.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Category */}
-                <div className="space-y-2">
-                  <Label htmlFor="category">Category</Label>
-
-                  <Input
-                    id="category"
-                    placeholder="Dynamic Programming"
-                    {...register("category")}
+                      setValue("price", undefined, {
+                        shouldValidate: true,
+                      });
+                    }}
+                    className="mt-1"
                   />
 
-                  {errors.category && (
-                    <p className="text-sm text-destructive">
-                      {errors.category.message}
+                  <div>
+                    <p className="font-medium">
+                      Free
                     </p>
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
-          {/* ================= PROBLEM DETAILS ================= */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Problem Details</CardTitle>
-
-              <CardDescription>
-                Define the input, output, and constraints for the problem.
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="space-y-5">
-              {/* Input Format */}
-              <div className="space-y-2">
-                <Label htmlFor="inputFormat">Input Format</Label>
-
-                <Textarea
-                  id="inputFormat"
-                  rows={4}
-                  placeholder="The first line contains n..."
-                  {...register("inputFormat")}
-                />
-
-                {errors.inputFormat && (
-                  <p className="text-sm text-destructive">
-                    {errors.inputFormat.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Output Format */}
-              <div className="space-y-2">
-                <Label htmlFor="outputFormat">Output Format</Label>
-
-                <Textarea
-                  id="outputFormat"
-                  rows={4}
-                  placeholder="Print the maximum possible sum..."
-                  {...register("outputFormat")}
-                />
-
-                {errors.outputFormat && (
-                  <p className="text-sm text-destructive">
-                    {errors.outputFormat.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Constraints */}
-              <div className="space-y-2">
-                <Label htmlFor="constraints">Constraints</Label>
-
-                <Textarea
-                  id="constraints"
-                  rows={4}
-                  placeholder="1 <= n <= 100000"
-                  {...register("constraints")}
-                />
-
-                {errors.constraints && (
-                  <p className="text-sm text-destructive">
-                    {errors.constraints.message}
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* ================= EXECUTION LIMITS ================= */}
-          <Card>
-            <CardHeader>
-              <CardTitle>Execution Limits</CardTitle>
-
-              <CardDescription>
-                Configure the resource limits for code execution.
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent>
-              <div className="grid gap-5 md:grid-cols-2">
-                {/* Time Limit */}
-                <div className="space-y-2">
-                  <Label>Time Limit</Label>
-
-                  <div className="flex gap-2">
-                    <Input
-                      type="number"
-                      min={1}
-                      placeholder="Enter time"
-                      {...register("timeLimit", {
-                        valueAsNumber: true,
-                      })}
-                    />
-
-                    <Select defaultValue="MINUTE">
-                      <SelectTrigger className="w-[130px]">
-                        <SelectValue />
-                      </SelectTrigger>
-
-                      <SelectContent>
-                        <SelectItem value="MINUTE">Minute</SelectItem>
-                        <SelectItem value="HOUR">Hour</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <p className="text-sm text-muted-foreground">
+                      Everyone can access this problem.
+                    </p>
                   </div>
+                </label>
 
-                  {errors.timeLimit && (
-                    <p className="text-sm text-destructive">
-                      {errors.timeLimit.message}
-                    </p>
-                  )}
-                </div>
-
-                {/* Memory Limit */}
-                <div className="space-y-2">
-                  <Label htmlFor="memoryLimit">
-                    Memory Limit
-                    <span className="ml-1 text-muted-foreground">(MB)</span>
-                  </Label>
-
-                  <Input
-                    id="memoryLimit"
-                    type="number"
-                    placeholder="256"
-                    {...register("memoryLimit", {
-                      valueAsNumber: true,
-                    })}
+                {/* Paid */}
+                <label
+                  className={`flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition ${
+                    isPaid
+                      ? "border-primary bg-primary/5"
+                      : ""
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="problemAccess"
+                    value="paid"
+                    checked={isPaid}
+                    onChange={() => {
+                      setValue("isPaid", true, {
+                        shouldValidate: true,
+                      });
+                    }}
+                    className="mt-1"
                   />
 
-                  {errors.memoryLimit && (
-                    <p className="text-sm text-destructive">
-                      {errors.memoryLimit.message}
+                  <div>
+                    <p className="font-medium">
+                      Paid
                     </p>
-                  )}
-                </div>
+
+                    <p className="text-sm text-muted-foreground">
+                      Users need to purchase this
+                      problem.
+                    </p>
+                  </div>
+                </label>
               </div>
-            </CardContent>
-          </Card>
 
-          {/* ================= ACTIONS ================= */}
-          <div className="flex justify-end gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              disabled={isPending}
-              onClick={() => reset()}
-            >
-              Cancel
-            </Button>
+              {errors.isPaid && (
+                <p className="text-sm text-red-500">
+                  {errors.isPaid.message}
+                </p>
+              )}
+            </div>
 
-            <Button type="submit" disabled={isPending}>
-              {isPending ? "Creating..." : "Create Problem"}
-            </Button>
-          </div>
-        </form>
-      </div>
+            {/* Price */}
+            {isPaid && (
+              <div className="space-y-2">
+                <Label htmlFor="price">
+                  Price
+                </Label>
+
+                <Input
+                  id="price"
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="Enter price"
+                  {...register("price", {
+                    valueAsNumber: true,
+                  })}
+                />
+
+                <p className="text-xs text-muted-foreground">
+                  Enter the price users need to pay
+                  to access this problem.
+                </p>
+
+                {errors.price && (
+                  <p className="text-sm text-red-500">
+                    {errors.price.message}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => router.back()}
+                disabled={isPending}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                type="submit"
+                disabled={isPending}
+              >
+                {isPending
+                  ? "Creating..."
+                  : "Create Problem"}
+              </Button>
+            </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 }

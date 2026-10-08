@@ -1,8 +1,8 @@
 export interface ProblemFormValues {
   title: string;
   description: string;
-  //   type: "CODING" | "MCQ" | "WRITTEN";
-  type: "CODING";
+  answer: string;
+  marks: number;
   difficulty: "EASY" | "MEDIUM" | "HARD";
   category: string;
   inputFormat: string;
@@ -10,9 +10,10 @@ export interface ProblemFormValues {
   constraints: string;
   timeLimit: number;
   memoryLimit: number;
+
+  isPaid: boolean;
+  price?: number;
 }
-
-
 
 export interface Problem {
   id: string;
@@ -21,14 +22,22 @@ export interface Problem {
   type: "CODING";
   difficulty: "EASY" | "MEDIUM" | "HARD";
   category: string;
+
+  answer: string;
+  marks: number;
+
   inputFormat: string;
   outputFormat: string;
   constraints: string;
   timeLimit: number;
   memoryLimit: number;
+
   createdById: string;
   createdAt: string;
   updatedAt: string;
+  isPaid: boolean;
+  price?: number;
+
   createdBy: {
     id: string;
     name: string;
@@ -61,7 +70,6 @@ export interface ProblemQueryParams {
   type?: "CODING";
   sortOrder?: "asc" | "desc";
 }
-
 
 export interface SingleProblemResponse {
   success: boolean;

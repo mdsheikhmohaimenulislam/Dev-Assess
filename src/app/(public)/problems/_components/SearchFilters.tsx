@@ -22,6 +22,7 @@ import {
 interface SearchFiltersProps {
   search: string;
   category: string;
+  categories: string[];
   difficulty: string;
   type: string;
   sortOrder: "asc" | "desc";
@@ -38,6 +39,7 @@ interface SearchFiltersProps {
 export default function SearchFilters({
   search,
   category,
+  categories,
   difficulty,
   type,
   sortOrder,
@@ -68,35 +70,32 @@ export default function SearchFilters({
     setPage(1);
   };
 
-  const handleCategory = (value: string | null) => {
-    if (value === null) return;
+const handleCategory = (value: string | null) => {
+  if (value === null) return;
 
-    setCategory(value);
-    setPage(1);
-  };
+  setCategory(value);
+  setPage(1);
+};
 
-  const handleDifficulty = (value: string | null) => {
-    if (value === null) return;
+const handleDifficulty = (value: string | null) => {
+  if (value === null) return;
 
-    setDifficulty(value);
-    setPage(1);
-  };
+  setDifficulty(value);
+  setPage(1);
+};
+const handleType = (value: string | null) => {
+  if (value === null) return;
 
-  const handleType = (value: string | null) => {
-    if (value === null) return;
+  setType(value);
+  setPage(1);
+};
 
-    setType(value);
-    setPage(1);
-  };
+const handleSort = (value: "asc" | "desc" | null) => {
+  if (value === null) return;
 
-  const handleSort = (value: "asc" | "desc" | null) => {
-    if (value === null) {
-      return;
-    }
-
-    setSortOrder(value);
-    setPage(1);
-  };
+  setSortOrder(value);
+  setPage(1);
+};
 
   return (
     <Card>
@@ -132,17 +131,11 @@ export default function SearchFilters({
             <SelectContent>
               <SelectItem value="ALL">All Categories</SelectItem>
 
-              <SelectItem value="Binary Tree">Binary Tree</SelectItem>
-
-              <SelectItem value="Dynamic Programming">
-                Dynamic Programming
-              </SelectItem>
-
-              <SelectItem value="Array">Array</SelectItem>
-
-              <SelectItem value="String">String</SelectItem>
-
-              <SelectItem value="Graph">Graph</SelectItem>
+              {categories.map((item) => (
+                <SelectItem key={item} value={item}>
+                  {item}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
 
@@ -154,11 +147,8 @@ export default function SearchFilters({
 
             <SelectContent>
               <SelectItem value="ALL">All Difficulties</SelectItem>
-
               <SelectItem value="EASY">Easy</SelectItem>
-
               <SelectItem value="MEDIUM">Medium</SelectItem>
-
               <SelectItem value="HARD">Hard</SelectItem>
             </SelectContent>
           </Select>
@@ -171,7 +161,6 @@ export default function SearchFilters({
 
             <SelectContent>
               <SelectItem value="ALL">All Types</SelectItem>
-
               <SelectItem value="CODING">Coding</SelectItem>
             </SelectContent>
           </Select>
@@ -184,7 +173,6 @@ export default function SearchFilters({
 
             <SelectContent>
               <SelectItem value="asc">Oldest First</SelectItem>
-
               <SelectItem value="desc">Newest First</SelectItem>
             </SelectContent>
           </Select>

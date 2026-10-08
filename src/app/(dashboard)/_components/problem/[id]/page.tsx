@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
   ArrowLeft,
@@ -9,6 +8,7 @@ import {
   Code2,
   Cpu,
   UserRound,
+  CircleDollarSign,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -42,9 +42,7 @@ export default function ProblemDetailsPage({
     return (
       <div className="container mx-auto px-4 py-10">
         <div className="flex min-h-[400px] flex-col items-center justify-center gap-4">
-          <p className="text-destructive">
-            Failed to load problem.
-          </p>
+          <p className="text-destructive">Failed to load problem.</p>
 
           <Button
             type="button"
@@ -79,13 +77,17 @@ export default function ProblemDetailsPage({
             <div className="mb-3 flex flex-wrap items-center gap-2">
               <Badge>{problem.type}</Badge>
 
-              <Badge variant="secondary">
-                {problem.difficulty}
-              </Badge>
+              <Badge variant="secondary">{problem.difficulty}</Badge>
 
-              <Badge variant="outline">
-                {problem.category}
-              </Badge>
+              <Badge variant="outline">{problem.category}</Badge>
+
+              {problem.isPaid ? (
+                <Badge variant="destructive">
+                  Paid - ${problem.price}
+                </Badge>
+              ) : (
+                <Badge variant="secondary">Free</Badge>
+              )}
             </div>
 
             <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
@@ -116,9 +118,7 @@ export default function ProblemDetailsPage({
 
           {/* Input Format */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">
-              Input Format
-            </h2>
+            <h2 className="mb-4 text-xl font-semibold">Input Format</h2>
 
             <p className="whitespace-pre-wrap leading-7 text-muted-foreground">
               {problem.inputFormat}
@@ -127,9 +127,7 @@ export default function ProblemDetailsPage({
 
           {/* Output Format */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">
-              Output Format
-            </h2>
+            <h2 className="mb-4 text-xl font-semibold">Output Format</h2>
 
             <p className="whitespace-pre-wrap leading-7 text-muted-foreground">
               {problem.outputFormat}
@@ -138,9 +136,7 @@ export default function ProblemDetailsPage({
 
           {/* Constraints */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-4 text-xl font-semibold">
-              Constraints
-            </h2>
+            <h2 className="mb-4 text-xl font-semibold">Constraints</h2>
 
             <p className="whitespace-pre-wrap leading-7 text-muted-foreground">
               {problem.constraints}
@@ -157,6 +153,26 @@ export default function ProblemDetailsPage({
             </h2>
 
             <div className="space-y-5">
+              {/* Access */}
+              <div className="flex items-center gap-3">
+                <CircleDollarSign className="h-5 w-5 text-muted-foreground" />
+
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Access
+                  </p>
+
+                  {problem.isPaid ? (
+                    <p className="font-medium">
+                      Paid - ${problem.price}
+                    </p>
+                  ) : (
+                    <p className="font-medium">Free</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Time */}
               <div className="flex items-center gap-3">
                 <Clock className="h-5 w-5 text-muted-foreground" />
 
@@ -171,6 +187,7 @@ export default function ProblemDetailsPage({
                 </div>
               </div>
 
+              {/* Memory */}
               <div className="flex items-center gap-3">
                 <Cpu className="h-5 w-5 text-muted-foreground" />
 
@@ -185,6 +202,20 @@ export default function ProblemDetailsPage({
                 </div>
               </div>
 
+              {/* Marks */}
+              <div className="flex items-center gap-3">
+                <Code2 className="h-5 w-5 text-muted-foreground" />
+
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Marks
+                  </p>
+
+                  <p className="font-medium">{problem.marks}</p>
+                </div>
+              </div>
+
+              {/* Created By */}
               <div className="flex items-center gap-3">
                 <UserRound className="h-5 w-5 text-muted-foreground" />
 
@@ -203,6 +234,7 @@ export default function ProblemDetailsPage({
                 </div>
               </div>
 
+              {/* Type */}
               <div className="flex items-center gap-3">
                 <Code2 className="h-5 w-5 text-muted-foreground" />
 
@@ -211,9 +243,7 @@ export default function ProblemDetailsPage({
                     Type
                   </p>
 
-                  <p className="font-medium">
-                    {problem.type}
-                  </p>
+                  <p className="font-medium">{problem.type}</p>
                 </div>
               </div>
             </div>
@@ -221,11 +251,10 @@ export default function ProblemDetailsPage({
 
           {/* Dates */}
           <section className="rounded-xl border bg-card p-6 shadow-sm">
-            <h2 className="mb-5 text-lg font-semibold">
-              Dates
-            </h2>
+            <h2 className="mb-5 text-lg font-semibold">Dates</h2>
 
             <div className="space-y-5">
+              {/* Created At */}
               <div className="flex items-center gap-3">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
 
@@ -240,6 +269,7 @@ export default function ProblemDetailsPage({
                 </div>
               </div>
 
+              {/* Updated At */}
               <div className="flex items-center gap-3">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
 
