@@ -79,9 +79,16 @@ export default function CreateProblemsForm({
       price: data.isPaid ? data.price : undefined,
     };
 
-    console.log("Form Data:", payload);
+
+
+
+
 
     mutate(payload, {
+
+
+
+      
       onSuccess: () => {
         toast.add({
           type: "success",

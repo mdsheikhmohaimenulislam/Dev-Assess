@@ -49,6 +49,8 @@ export default function ProblemsPage() {
   const problems = data?.data ?? [];
   const meta = data?.meta;
 
+  console.log(problems,"li");
+
   // Get unique categories from backend problems
   const categories = useMemo(() => {
     const uniqueCategories = new Set<string>();

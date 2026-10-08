@@ -27,6 +27,7 @@ import { toast } from "../ui/toast";
 import GoogleAuthButton from "../auth/google-auth-button";
 import { useRouter } from "next/navigation";
 import { refresh } from "next/cache";
+import FillDemoAccount from "../auth/DemoLoginButtons";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -65,7 +66,7 @@ login(loginData, {
 
 
 
-    router.push("/");
+  
 
   },
 
@@ -261,6 +262,8 @@ login(loginData, {
         open={forgotPasswordOpen}
         onOpenChange={setForgotPasswordOpen}
       />
+      
+      <FillDemoAccount  />
     </>
   );
 }

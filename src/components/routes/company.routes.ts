@@ -35,6 +35,10 @@ export const companyRoutes = [
         url: `${prefix}/createProblem`,
       },
       {
+        title: "My Problems",
+        url: `${prefix}/problems`,
+      },
+      {
         title: "My Company",
         url: `${prefix}/myCompany`,
       },

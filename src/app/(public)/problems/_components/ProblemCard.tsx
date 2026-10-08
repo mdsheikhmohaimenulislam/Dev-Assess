@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -21,6 +22,7 @@ import {
 } from "@/components/ui/card";
 
 import type { Problem } from "@/components/types";
+import PaymentButton from "@/app/(dashboard)/_components/payment/PaymentButton";
 
 interface ProblemCardProps {
   problem: Problem;
@@ -36,6 +38,15 @@ export default function ProblemCard({ problem }: ProblemCardProps) {
         ? "secondary"
         : "destructive";
 
+  const handleAction = () => {
+    if (problem.isPaid) {
+      router.push(`/problems/${problem.id}/payment`);
+      return;
+    }
+
+    router.push(`/problems/${problem.id}`);
+  };
+
   return (
     <Card className="flex h-full flex-col transition-shadow hover:shadow-md">
       {/* Header */}
@@ -48,13 +59,17 @@ export default function ProblemCard({ problem }: ProblemCardProps) {
 
             <CardDescription className="mt-2 flex items-center gap-1">
               <UserRound className="h-3.5 w-3.5" />
+
               <span className="truncate">
                 {problem.createdBy.name}
               </span>
             </CardDescription>
           </div>
 
-          <Badge variant="outline" className="shrink-0 gap-1">
+          <Badge
+            variant="outline"
+            className="shrink-0 gap-1"
+          >
             <Code2 className="h-3 w-3" />
             {problem.type}
           </Badge>
@@ -70,14 +85,20 @@ export default function ProblemCard({ problem }: ProblemCardProps) {
 
         {/* Category / Difficulty / Access */}
         <div className="flex flex-wrap gap-2">
-          <Badge variant="secondary">{problem.category}</Badge>
+          <Badge variant="secondary">
+            {problem.category}
+          </Badge>
 
           <Badge variant={difficultyVariant}>
             {problem.difficulty}
           </Badge>
 
+          {/* Paid / Free */}
           {problem.isPaid ? (
-            <Badge variant="destructive" className="gap-1">
+            <Badge
+              variant="destructive"
+              className="gap-1"
+            >
               <LockKeyhole className="h-3 w-3" />
               Paid
 
@@ -86,7 +107,10 @@ export default function ProblemCard({ problem }: ProblemCardProps) {
               )}
             </Badge>
           ) : (
-            <Badge variant="outline" className="gap-1">
+            <Badge
+              variant="outline"
+              className="gap-1"
+            >
               <UnlockKeyhole className="h-3 w-3" />
               Free
             </Badge>
@@ -138,22 +162,28 @@ export default function ProblemCard({ problem }: ProblemCardProps) {
             </p>
           </div>
 
+          {/* Price */}
           {problem.isPaid && problem.price !== null && (
             <div className="flex items-center gap-1 text-sm font-semibold">
               <CircleDollarSign className="h-4 w-4" />
+
               {problem.price}
             </div>
           )}
         </div>
 
-        {/* Details */}
-        <Button
-          size="sm"
-          className="mt-auto w-full"
-          onClick={() => router.push(`/problems/${problem.id}`)}
-        >
-          View Details
-        </Button>
+        {/* Action */}
+{problem.isPaid ? (
+  <PaymentButton problemId={problem.id} />
+) : (
+  <Button
+    size="sm"
+    className="mt-auto w-full"
+    onClick={() => router.push(`/problems/${problem.id}`)}
+  >
+    View Details
+  </Button>
+)}
       </CardContent>
     </Card>
   );

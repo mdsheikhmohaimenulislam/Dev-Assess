@@ -72,6 +72,7 @@ export default function RegisterForm() {
 
         // Save verification state
         sessionStorage.setItem("verificationPending", "true");
+
         sessionStorage.setItem("verificationEmail", data.email);
 
         setRegisteredEmail(data.email);
@@ -97,9 +98,16 @@ export default function RegisterForm() {
 
         // Clear verification state
         sessionStorage.removeItem("verificationPending");
+
         sessionStorage.removeItem("verificationEmail");
 
         setVerifyModalOpen(false);
+        setRegisteredEmail("");
+
+        verifyForm.reset({
+          email: "",
+          otp: "",
+        });
 
         router.push("/");
       },
@@ -108,6 +116,25 @@ export default function RegisterForm() {
         toast.error(error.message || "Invalid OTP.");
       },
     });
+  };
+
+  const handleCancelVerification = () => {
+    // Clear verification state
+    sessionStorage.removeItem("verificationPending");
+
+    sessionStorage.removeItem("verificationEmail");
+
+    // Reset OTP form
+    verifyForm.reset({
+      email: "",
+      otp: "",
+    });
+
+    // Clear registered email
+    setRegisteredEmail("");
+
+    // Close modal
+    setVerifyModalOpen(false);
   };
 
   return (
@@ -233,6 +260,7 @@ export default function RegisterForm() {
               onSubmit={verifyForm.handleSubmit(handleVerify)}
               className="mt-6 space-y-4"
             >
+              {/* OTP */}
               <div className="space-y-2">
                 <Label htmlFor="otp">Verification OTP</Label>
 
@@ -252,9 +280,24 @@ export default function RegisterForm() {
                 )}
               </div>
 
-              <Button type="submit" className="w-full" disabled={isVerifying}>
-                {isVerifying ? "Verifying..." : "Verify Account"}
-              </Button>
+              {/* Actions */}
+              <div className="flex flex-col gap-2">
+                {/* Verify */}
+                <Button type="submit" className="w-full" disabled={isVerifying}>
+                  {isVerifying ? "Verifying..." : "Verify Account"}
+                </Button>
+
+                {/* Cancel */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleCancelVerification}
+                  disabled={isVerifying}
+                >
+                  Cancel
+                </Button>
+              </div>
             </form>
           </div>
         </div>
