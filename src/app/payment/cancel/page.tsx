@@ -37,6 +37,7 @@ export default function PaymentCancelPage() {
           </Button>
         </CardContent>
       </Card>
+      
     </div>
   );
-}
+} 

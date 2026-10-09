@@ -45,3 +45,31 @@ export function executePayment(paymentId: string) {
     },
   );
 }
+
+
+
+
+export interface MyPayment {
+  id: string;
+  problemId: string;
+  status: "PENDING" | "PAID" | "FAILED" | "CANCELLED";
+  amount: number;
+  currency: string;
+  paidAt: string | null;
+}
+
+export interface GetMyPaymentsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: MyPayment[];
+}
+
+export function getMyPayments() {
+  return apiClient<GetMyPaymentsResponse>(
+    "/payment",
+    {
+      method: "GET",
+    },
+  );
+}
