@@ -31,9 +31,9 @@ export default function PaymentCancelPage() {
           </p>
 
           <Button className="w-full">
-            {/* <Link href="/problems">
+            <Link href="/problems">
               Back to Problems
-            </Link> */}
+            </Link>
           </Button>
         </CardContent>
       </Card>
