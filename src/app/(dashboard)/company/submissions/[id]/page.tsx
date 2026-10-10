@@ -10,5 +10,5 @@ export default async function CompanySubmissionDetailsPage({
 }: PageProps) {
   const { id } = await params;
 
-  return <SubmissionDetails id={id} />;
+  return <SubmissionDetails id={id} userRole="COMPANY" />;
 }

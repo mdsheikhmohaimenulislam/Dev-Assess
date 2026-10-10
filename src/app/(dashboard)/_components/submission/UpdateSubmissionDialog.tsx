@@ -1,9 +1,7 @@
-
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "sonner";
-
 
 import type {
   Submission,
@@ -37,16 +35,10 @@ export default function UpdateSubmissionDialog({
   submission,
 }: UpdateSubmissionDialogProps) {
   const [open, setOpen] = useState(false);
-  const [marks, setMarks] = useState(
-    String(submission.obtainedMark),
-  );
-  const [status, setStatus] = useState<SubmissionStatus>(
-    submission.status,
-  );
+  const [marks, setMarks] = useState(String(submission.obtainedMark));
+  const [status, setStatus] = useState<SubmissionStatus>(submission.status);
   const [correctness, setCorrectness] = useState(
-    submission.isCorrect === null
-      ? "null"
-      : String(submission.isCorrect),
+    submission.isCorrect === null ? "null" : String(submission.isCorrect),
   );
 
   const mutation = useUpdateSubmission();
@@ -55,9 +47,7 @@ export default function UpdateSubmissionDialog({
     setMarks(String(submission.obtainedMark));
     setStatus(submission.status);
     setCorrectness(
-      submission.isCorrect === null
-        ? "null"
-        : String(submission.isCorrect),
+      submission.isCorrect === null ? "null" : String(submission.isCorrect),
     );
   }, [submission]);
 
@@ -83,10 +73,7 @@ export default function UpdateSubmissionDialog({
         payload: {
           obtainedMark,
           status,
-          isCorrect:
-            correctness === "null"
-              ? null
-              : correctness === "true",
+          isCorrect: correctness === "null" ? null : correctness === "true",
         },
       },
       {
@@ -129,33 +116,71 @@ export default function UpdateSubmissionDialog({
           </div>
 
           <div className="space-y-2">
-            <Label>Status</Label>
-            <Select
-              value={status}
-              onValueChange={(value) =>
-                setStatus(value as SubmissionStatus)
-              }
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Select status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="PENDING">Pending</SelectItem>
-                <SelectItem value="EVALUATED">Evaluated</SelectItem>
-                <SelectItem value="FAILED">Failed</SelectItem>
-              </SelectContent>
-            </Select>
+<div className="space-y-2">
+  <Label>Status</Label>
+
+  <Select
+    value={status}
+    onValueChange={(value) => {
+      if (value !== null) {
+        setStatus(value as SubmissionStatus);
+      }
+    }}
+  >
+    <SelectTrigger
+      className={
+        status === "PENDING"
+          ? "border-yellow-500 text-yellow-600"
+          : status === "EVALUATED"
+            ? "border-green-500 text-green-600"
+            : status === "FAILED"
+              ? "border-red-500 text-red-600"
+              : ""
+      }
+    >
+      <SelectValue placeholder="Select status" />
+    </SelectTrigger>
+
+    <SelectContent>
+      <SelectItem
+        value="PENDING"
+        className="text-yellow-600 focus:text-yellow-700"
+      >
+        🟡 Pending
+      </SelectItem>
+
+      <SelectItem
+        value="EVALUATED"
+        className="text-green-600 focus:text-green-700"
+      >
+        🟢 Evaluated
+      </SelectItem>
+
+      <SelectItem
+        value="FAILED"
+        className="text-red-600 focus:text-red-700"
+      >
+        🔴 Failed
+      </SelectItem>
+    </SelectContent>
+  </Select>
+</div>
           </div>
 
           <div className="space-y-2">
             <Label>Correctness</Label>
             <Select
               value={correctness}
-              onValueChange={setCorrectness}
+              onValueChange={(value) => {
+                if (value !== null) {
+                  setCorrectness(value);
+                }
+              }}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select result" />
               </SelectTrigger>
+
               <SelectContent>
                 <SelectItem value="null">Not evaluated</SelectItem>
                 <SelectItem value="true">Correct</SelectItem>
@@ -181,8 +206,6 @@ function maxMarksText(maxMarks?: number) {
   if (maxMarks === undefined) return null;
 
   return (
-    <p className="text-xs text-muted-foreground">
-      Maximum marks: {maxMarks}
-    </p>
+    <p className="text-xs text-muted-foreground">Maximum marks: {maxMarks}</p>
   );
 }

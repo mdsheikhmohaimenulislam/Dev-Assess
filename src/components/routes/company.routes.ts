@@ -48,8 +48,8 @@ export const companyRoutes = [
       },
 
       {
-        title: "Results",
-        url: `${prefix}/results`,
+        title: "Candidates Submissions",
+        url: `${prefix}/submissions`,
       },
     ],
   },
