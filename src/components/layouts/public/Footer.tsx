@@ -9,7 +9,7 @@ import {
 import { FaFacebookF, FaGithub, FaLinkedinIn } from "react-icons/fa6";
 
 const quickLinks = [
-  { name: "Assessments", href: "/assessments" },
+
   { name: "Problems", href: "/problems" },
   { name: "Companies", href: "/companies" },
   { name: "About Us", href: "/about" },
@@ -18,7 +18,7 @@ const quickLinks = [
 const supportLinks = [
   { name: "Help Center", href: "/help-center" },
   { name: "FAQ", href: "/faq" },
-  { name: "Contact", href: "/contact" },
+
 ];
 
 export default function Footer() {
@@ -158,10 +158,10 @@ export default function Footer() {
               </p>
 
               <Link
-                href="/assessments"
+                href="/problems"
                 className="group mt-4 inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:opacity-90 hover:shadow-lg"
               >
-                Explore Assessments
+                Explore Problem
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
@@ -190,13 +190,6 @@ export default function Footer() {
               className="text-muted-foreground transition-colors hover:text-primary"
             >
               FAQ
-            </Link>
-
-            <Link
-              href="/contact"
-              className="text-muted-foreground transition-colors hover:text-primary"
-            >
-              Contact
             </Link>
           </div>
         </div>

@@ -39,11 +39,7 @@ export default function HomePage() {
             designed for developers and candidates.
           </p>
 
-          <div className="mt-6 flex justify-center gap-3">
-            <Button>
-              <Link href="/problems">Explore Problems</Link>
-            </Button>
-          </div>
+
         </div>
       </section>
 
