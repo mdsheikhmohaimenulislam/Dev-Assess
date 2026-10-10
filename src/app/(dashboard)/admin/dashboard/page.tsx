@@ -20,7 +20,7 @@ import {
 } from "recharts";
 
 import { useGetAllUsers } from "@/components/hooks/user.hook";
-import { useGetAllCandidates } from "@/components/hooks/candidate.hook";
+
 import { useGetAllProblems } from "@/components/hooks/problem.hook";
 
 import { Button } from "@/components/ui/button";
@@ -184,13 +184,7 @@ export default function AdminDashboardPage() {
     refetch: refetchUsers,
   } = useGetAllUsers();
 
-  const {
-    data: candidatesResponse,
-    isPending: candidatesPending,
-    isError: candidatesError,
-    error: candidatesErrorMessage,
-    refetch: refetchCandidates,
-  } = useGetAllCandidates();
+
 
   const {
     data: problemsResponse,
@@ -201,10 +195,10 @@ export default function AdminDashboardPage() {
   } = useGetAllProblems();
 
   const isPending =
-    usersPending || candidatesPending || problemsPending;
+    usersPending  || problemsPending;
 
   const hasError =
-    usersError || candidatesError || problemsError;
+    usersError || problemsError;
 
     
 
@@ -218,7 +212,7 @@ const refreshAll = async () => {
   try {
     await Promise.all([
       refetchUsers(),
-      refetchCandidates(),
+
       refetchProblems(),
     ]);
   } finally {
@@ -254,7 +248,7 @@ const refreshAll = async () => {
   if (hasError) {
     const message =
       usersErrorMessage?.message ??
-      candidatesErrorMessage?.message ??
+
       problemsErrorMessage?.message ??
       "Could not load dashboard data.";
 
@@ -277,7 +271,7 @@ const refreshAll = async () => {
   }
 
   const users = getRecords(usersResponse);
-  const candidates = getRecords(candidatesResponse);
+
   const problems = getRecords(problemsResponse);
 
   const roles = users.reduce<Record<string, number>>(
@@ -332,12 +326,7 @@ const refreshAll = async () => {
       description: "All registered users",
       icon: Users,
     },
-    {
-      title: "Total Candidates",
-      value: candidates.length,
-      description: "Candidate accounts",
-      icon: UserRoundCheck,
-    },
+
     {
       title: "Total Problems",
       value: problems.length,
