@@ -20,7 +20,7 @@ export const candidateRoutes = [
       },
             {
         title: "Results",
-        url: `${prefix}/results`,
+        url: `${prefix}/submissions`,
       },
     ],
   },
