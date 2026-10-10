@@ -13,30 +13,28 @@ export const adminRoutes = [
         url: `${prefix}/users`,
       },
       {
-        title: "Companies",
-        url: `${prefix}/company`,
+        title: "Create Problems",
+        url: `${prefix}/createProblems`,
       },
       // {
       //   title: "Assessments",
       //   url: `${prefix}/assessments`,
       // },
+
       {
-        title: "Problems",
-        url: `${prefix}/problems`,
-      },
-      {
-        title: "Create Problems",
-        url: `${prefix}/createProblems`,
+        title: "Candidates Submissions",
+        url: `${prefix}/submissions`,
       },
     ],
   },
-  {
-    title: "System",
+    {
+    title: "Account",
     items: [
       {
-        title: "Settings",
-        url: `${prefix}/settings`,
+        title: "Profile",
+        url: `${prefix}/profile`,
       },
+
     ],
   },
 ];

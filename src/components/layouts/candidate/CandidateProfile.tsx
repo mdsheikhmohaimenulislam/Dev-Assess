@@ -23,7 +23,7 @@ import DeleteCandidateProfile from "./DeleteCandidateProfile";
 
 export default function CandidateProfile() {
   const [isEditing, setIsEditing] = useState(false);
-const [isDeleted, setIsDeleted] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const {
     data: userData,
@@ -222,9 +222,9 @@ const [isDeleted, setIsDeleted] = useState(false);
                 Candidate Information
               </h3>
 
-     {candidate && (
-    <DeleteCandidateProfile candidateId={candidate.id} />
-  )}
+              {candidate && (
+                <DeleteCandidateProfile candidateId={candidate.id} />
+              )}
             </div>
 
             {!candidate ? (

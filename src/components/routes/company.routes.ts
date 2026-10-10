@@ -60,10 +60,7 @@ export const companyRoutes = [
         title: "Profile",
         url: `${prefix}/profile`,
       },
-      {
-        title: "Settings",
-        url: `${prefix}/settings`,
-      },
+
     ],
   },
 ];
