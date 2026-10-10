@@ -1,5 +1,7 @@
+
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import {
@@ -10,6 +12,7 @@ import {
   Code2,
   Cpu,
   Mail,
+  Play,
   Tag,
   UserRound,
 } from "lucide-react";
@@ -25,19 +28,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import Loading from "@/app/loading";
+import SolveProblemDialog from "../_components/SolveProblemDialog";
 
 export default function DetailsPage() {
   const params = useParams<{ id: string }>();
   const id = params.id;
+
+  const [solveDialogOpen, setSolveDialogOpen] = useState(false);
 
   const { data, isLoading, isError } = useGetSingleProblem(id);
 
   const problem = data?.data;
 
   if (isLoading) {
-    return (
-<Loading/>
-    );
+    return <Loading />;
   }
 
   if (isError || !problem) {
@@ -50,10 +54,8 @@ export default function DetailsPage() {
 
               <Button>
                 <Link href="/problems">
-                  <div className="flex gap-1">
-                    <ArrowLeft />
-                    Back
-                  </div>
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Problems
                 </Link>
               </Button>
             </CardContent>
@@ -69,10 +71,8 @@ export default function DetailsPage() {
         {/* Back Button */}
         <Button variant="outline">
           <Link href="/problems">
-            <div className="flex gap-1">
-              <ArrowLeft />
-              Back
-            </div>
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back
           </Link>
         </Button>
 
@@ -85,7 +85,9 @@ export default function DetailsPage() {
                 {problem.type}
               </Badge>
 
-              <Badge variant="secondary">{problem.difficulty}</Badge>
+              <Badge variant="secondary">
+                {problem.difficulty}
+              </Badge>
 
               <Badge variant="outline">
                 <Tag className="mr-1 h-3.5 w-3.5" />
@@ -94,7 +96,9 @@ export default function DetailsPage() {
             </div>
 
             <div>
-              <CardTitle className="text-3xl">{problem.title}</CardTitle>
+              <CardTitle className="text-3xl">
+                {problem.title}
+              </CardTitle>
 
               <CardDescription className="mt-3 text-base leading-7">
                 {problem.description}
@@ -103,9 +107,13 @@ export default function DetailsPage() {
 
             {/* Problem ID */}
             <div className="rounded-lg bg-muted p-3">
-              <p className="text-xs text-muted-foreground">Problem ID</p>
+              <p className="text-xs text-muted-foreground">
+                Problem ID
+              </p>
 
-              <p className="mt-1 break-all font-mono text-sm">{problem.id}</p>
+              <p className="mt-1 break-all font-mono text-sm">
+                {problem.id}
+              </p>
             </div>
           </CardHeader>
         </Card>
@@ -118,8 +126,9 @@ export default function DetailsPage() {
               <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
 
               <div>
-                <p className="text-sm text-muted-foreground">Difficulty</p>
-
+                <p className="text-sm text-muted-foreground">
+                  Difficulty
+                </p>
                 <p className="font-medium">{problem.difficulty}</p>
               </div>
             </CardContent>
@@ -131,8 +140,9 @@ export default function DetailsPage() {
               <Clock className="h-5 w-5 text-muted-foreground" />
 
               <div>
-                <p className="text-sm text-muted-foreground">Time Limit</p>
-
+                <p className="text-sm text-muted-foreground">
+                  Time Limit
+                </p>
                 <p className="font-medium">{problem.timeLimit} ms</p>
               </div>
             </CardContent>
@@ -144,8 +154,9 @@ export default function DetailsPage() {
               <Cpu className="h-5 w-5 text-muted-foreground" />
 
               <div>
-                <p className="text-sm text-muted-foreground">Memory Limit</p>
-
+                <p className="text-sm text-muted-foreground">
+                  Memory Limit
+                </p>
                 <p className="font-medium">{problem.memoryLimit} MB</p>
               </div>
             </CardContent>
@@ -157,8 +168,9 @@ export default function DetailsPage() {
               <Tag className="h-5 w-5 text-muted-foreground" />
 
               <div>
-                <p className="text-sm text-muted-foreground">Category</p>
-
+                <p className="text-sm text-muted-foreground">
+                  Category
+                </p>
                 <p className="font-medium">{problem.category}</p>
               </div>
             </CardContent>
@@ -169,7 +181,6 @@ export default function DetailsPage() {
         <Card>
           <CardHeader>
             <CardTitle>Problem Description</CardTitle>
-
             <CardDescription>
               Understand the problem before submitting your solution.
             </CardDescription>
@@ -189,7 +200,7 @@ export default function DetailsPage() {
           </CardHeader>
 
           <CardContent>
-            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7">
+            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7 whitespace-pre-wrap">
               {problem.inputFormat}
             </pre>
           </CardContent>
@@ -202,7 +213,7 @@ export default function DetailsPage() {
           </CardHeader>
 
           <CardContent>
-            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7">
+            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7 whitespace-pre-wrap">
               {problem.outputFormat}
             </pre>
           </CardContent>
@@ -215,7 +226,7 @@ export default function DetailsPage() {
           </CardHeader>
 
           <CardContent>
-            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7">
+            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7 whitespace-pre-wrap">
               {problem.constraints}
             </pre>
           </CardContent>
@@ -235,7 +246,9 @@ export default function DetailsPage() {
                 </div>
 
                 <div>
-                  <p className="font-medium">{problem.createdBy.name}</p>
+                  <p className="font-medium">
+                    {problem.createdBy.name}
+                  </p>
 
                   <p className="text-sm text-muted-foreground">
                     {problem.createdBy.role}
@@ -245,7 +258,7 @@ export default function DetailsPage() {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4" />
-                {problem.createdBy.email}
+                <span>{problem.createdBy.email}</span>
               </div>
             </div>
           </CardContent>
@@ -264,14 +277,19 @@ export default function DetailsPage() {
                 <Calendar className="h-5 w-5 text-muted-foreground" />
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Created At</p>
+                  <p className="text-sm text-muted-foreground">
+                    Created At
+                  </p>
 
                   <p className="font-medium">
-                    {new Date(problem.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {new Date(problem.createdAt).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      },
+                    )}
                   </p>
                 </div>
               </div>
@@ -281,14 +299,19 @@ export default function DetailsPage() {
                 <Calendar className="h-5 w-5 text-muted-foreground" />
 
                 <div>
-                  <p className="text-sm text-muted-foreground">Last Updated</p>
+                  <p className="text-sm text-muted-foreground">
+                    Last Updated
+                  </p>
 
                   <p className="font-medium">
-                    {new Date(problem.updatedAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {new Date(problem.updatedAt).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      },
+                    )}
                   </p>
                 </div>
               </div>
@@ -296,22 +319,33 @@ export default function DetailsPage() {
           </CardContent>
         </Card>
 
-        {/* Action */}
+        {/* Solve Problem Action */}
         <Card>
           <CardContent className="flex flex-col items-center justify-between gap-4 pt-6 sm:flex-row">
             <div>
-              <h3 className="font-semibold">Ready to solve this problem?</h3>
+              <h3 className="font-semibold">
+                Ready to solve this problem?
+              </h3>
 
               <p className="text-sm text-muted-foreground">
                 Submit your solution and test your skills.
               </p>
             </div>
 
-            <Button>
-              <Link href={`/problems/${problem.id}/solve`}>Solve Problem</Link>
+            <Button onClick={() => setSolveDialogOpen(true)}>
+              <Play className="mr-2 h-4 w-4" />
+              Solve Problem
             </Button>
           </CardContent>
         </Card>
+
+        {/* Solve Problem Dialog */}
+        <SolveProblemDialog
+          open={solveDialogOpen}
+          onOpenChange={setSolveDialogOpen}
+          problemId={problem.id}
+          problemTitle={problem.title}
+        />
       </div>
     </div>
   );
