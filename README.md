@@ -1,36 +1,173 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Code Assess
+
+**A Developer Assessment Platform**
+
+Code Assess is a web-based platform designed to help candidates practice coding problems and participate in technical assessments. It also provides companies with tools to manage coding problems, assessments, and candidate submissions.
+
+## Features
+
+- **User Authentication** — Register and log in to your account.
+- **Google Authentication** — Sign in using Google.
+- **Role-Based Dashboards** — Separate dashboards for Admins, Companies, and Candidates.
+- **Coding Problems** — Browse and explore coding challenges.
+- **Assessment Management** — Create and manage technical assessments.
+- **Submission Management** — View and manage coding submissions.
+- **Company Management** — Manage company information and related problems.
+- **Payment Integration** — Payment status and result pages.
+- **Responsive UI** — Access the platform across different screen sizes.
+- **Help Center** — Find help and answers to common questions.
+
+## Tech Stack
+
+### Frontend
+- Next.js
+- React
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- Lucide React
+
+### Backend
+- Node.js
+- Express.js
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+
+### Tools & Services
+- Git & GitHub
+- Vercel
+- Google OAuth
+- Postman
+
+> The backend technologies and integrations listed above should match the actual backend implementation.
+
+## User Roles
+
+| Role | Responsibilities |
+|---|---|
+| Admin | Manage users, companies, problems, and submissions |
+| Company | Manage company information, coding problems, and submissions |
+| Candidate | Explore problems, participate in assessments, and view submissions |
 
 ## Getting Started
 
-First, run the development server:
+Follow these steps to run the frontend locally.
+
+### Prerequisites
+
+Make sure you have installed:
+
+- Node.js
+- npm
+- Git
+
+### 1. Clone the Repository
+
+```bash
+git clone <your-repository-url>
+```
+
+### 2. Navigate to the Project
+
+```bash
+cd Dev-Assess
+```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Configure Environment Variables
+
+Create a `.env.local` file in the project root:
+
+```env
+NEXT_PUBLIC_API_BASE_URL=http://localhost:5000/api/v1
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your-google-client-id
+```
+
+Replace `your-google-client-id` with your Google OAuth Client ID. Configure the API URL according to your backend environment.
+
+**Important:** Never commit `.env.local` or expose private credentials in your repository.
+
+### 5. Start the Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 6. Build for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+### 7. Run the Production Server Locally
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Run the build command before starting the production server.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```text
+Dev-Assess/
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── admin/
+│   │   ├── candidate/
+│   │   ├── company/
+│   │   ├── problems/
+│   │   ├── assessments/
+│   │   ├── login/
+│   │   └── register/
+│   ├── components/
+│   ├── providers/
+│   └── ...
+├── .env.local
+├── components.json
+├── next.config.ts
+├── package.json
+├── tsconfig.json
+└── README.md
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+*This is a simplified overview. The actual folders may differ from this example.*
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+The frontend can be deployed using [Vercel](https://vercel.com/).
+
+1. Import your GitHub repository into Vercel.
+2. Configure the required environment variables.
+3. Set the correct backend API URL.
+4. Configure Google OAuth authorized origins for your deployed domain.
+5. Deploy the application.
+
+## Future Improvements
+
+- Online code execution and automated test cases
+- Advanced assessment analytics
+- Candidate performance tracking
+- Email and in-app notifications
+- Improved search and filtering
+- Enhanced assessment reporting
+
+## Author
+
+**Mohaimenul Islam**
+
+- GitHub: [@mdsheikhmohaimenulislam](https://github.com/mdsheikhmohaimenulislam)
+- Portfolio: [mohaimenulislam.vercel.app](https://mohaimenulislam.vercel.app)
+
+## License
+
+This project is intended for educational and development purposes. Add a `LICENSE` file if you plan to distribute it under a specific open-source license.
