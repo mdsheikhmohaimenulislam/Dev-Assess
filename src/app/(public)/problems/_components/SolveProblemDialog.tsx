@@ -2,7 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AlertTriangle, Clock3, Play, Send } from "lucide-react";
+import { AlertTriangle, Clock3, Send } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -20,12 +20,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Label } from "@/components/ui/label";
+import { SubmissionLanguage, SubmitProblemPayload } from "@/components/types/problem.types";
+
 
 interface SolveProblemDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   problemId: string;
   problemTitle: string;
+  submitProblem: (
+    payload: SubmitProblemPayload,
+    options?: {
+      onSuccess?: () => void;
+    },
+  ) => void;
+  isPending: boolean;
 }
 
 const DURATION_SECONDS = 30 * 60;
@@ -44,24 +54,34 @@ export default function SolveProblemDialog({
   onOpenChange,
   problemId,
   problemTitle,
+  submitProblem,
+  isPending,
 }: SolveProblemDialogProps) {
-  const [language, setLanguage] = useState("javascript");
+  const [language, setLanguage] =
+    useState<SubmissionLanguage>("javascript");
+
   const [code, setCode] = useState("");
   const [startTime, setStartTime] = useState<number | null>(null);
   const [now, setNow] = useState(Date.now());
   const [submitted, setSubmitted] = useState(false);
 
-  // Timer starts only once when the user opens the dialog.
+  // Start the timer when the dialog opens.
   useEffect(() => {
-    if (!open || startTime !== null || submitted) return;
+    if (!open || startTime !== null || submitted) {
+      return;
+    }
 
     const start = Date.now();
+
     setStartTime(start);
     setNow(start);
   }, [open, startTime, submitted]);
 
+  // Update the timer every second.
   useEffect(() => {
-    if (!open || startTime === null || submitted) return;
+    if (!open || startTime === null || submitted) {
+      return;
+    }
 
     const interval = window.setInterval(() => {
       setNow(Date.now());
@@ -80,26 +100,43 @@ export default function SolveProblemDialog({
       ? DURATION_SECONDS
       : Math.max(0, Math.ceil((endTime - now) / 1000));
 
-  const expired = startTime !== null && remainingSeconds <= 0;
+  const expired =
+    startTime !== null && remainingSeconds <= 0;
 
   function handleSubmit() {
-    if (expired || submitted || !code.trim()) return;
+    if (
+      expired ||
+      submitted ||
+      isPending ||
+      !code.trim() ||
+      startTime === null
+    ) {
+      return;
+    }
 
-    // TODO: Call your real submission API here.
-    console.log({
+    const payload: SubmitProblemPayload = {
       problemId,
       language,
-      code,
-      startedAt: new Date(startTime!).toISOString(),
+      code: code.trim(),
+      startedAt: new Date(startTime).toISOString(),
       submittedAt: new Date().toISOString(),
-    });
+    };
 
-    setSubmitted(true);
+    submitProblem(payload, {
+      onSuccess: () => {
+        setSubmitted(true);
+      },
+    });
   }
 
   function handleOpenChange(nextOpen: boolean) {
-    // Do not allow reopening after the deadline or successful submission.
-    if (nextOpen && (expired || submitted)) return;
+    if (isPending) {
+      return;
+    }
+
+    if (nextOpen && (expired || submitted)) {
+      return;
+    }
 
     onOpenChange(nextOpen);
   }
@@ -111,25 +148,35 @@ export default function SolveProblemDialog({
           <DialogTitle className="text-xl">
             Solve Problem: {problemTitle}
           </DialogTitle>
+
           <DialogDescription>
             Write your solution and submit it before the timer ends.
           </DialogDescription>
         </DialogHeader>
 
+        {/* Timer information */}
         <div className="grid gap-3 rounded-lg border p-4 sm:grid-cols-3">
           <div>
-            <p className="text-xs text-muted-foreground">Start Time</p>
+            <p className="text-xs text-muted-foreground">
+              Start Time
+            </p>
+
             <p className="mt-1 text-sm font-medium">
-              {startTime
+              {startTime !== null
                 ? new Date(startTime).toLocaleTimeString()
                 : "Starting..."}
             </p>
           </div>
 
           <div>
-            <p className="text-xs text-muted-foreground">End Time</p>
+            <p className="text-xs text-muted-foreground">
+              End Time
+            </p>
+
             <p className="mt-1 text-sm font-medium">
-              {endTime ? new Date(endTime).toLocaleTimeString() : "—"}
+              {endTime !== null
+                ? new Date(endTime).toLocaleTimeString()
+                : "—"}
             </p>
           </div>
 
@@ -138,6 +185,7 @@ export default function SolveProblemDialog({
               <Clock3 className="h-3.5 w-3.5" />
               Time Remaining
             </p>
+
             <p
               className={`mt-1 font-mono text-lg font-bold ${
                 remainingSeconds <= 60
@@ -150,6 +198,7 @@ export default function SolveProblemDialog({
           </div>
         </div>
 
+        {/* Time expired message */}
         {expired && (
           <div className="flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive">
             <AlertTriangle className="h-4 w-4 shrink-0" />
@@ -157,59 +206,98 @@ export default function SolveProblemDialog({
           </div>
         )}
 
+        {/* Submission success message */}
         {submitted && (
           <div className="rounded-md border border-green-500/30 bg-green-500/5 p-3 text-sm">
-            Submission action completed in the UI. Connect the submission API
-            to save and evaluate the solution on your backend.
+            Solution submitted successfully.
           </div>
         )}
 
+        {/* Programming language */}
         <div className="space-y-2">
-          <span className="text-sm font-medium">Programming Language</span>
+          <Label className="text-sm font-medium">
+            Programming Language
+          </Label>
 
           <Select
             value={language}
-            onValueChange={setLanguage}
-            disabled={expired || submitted}
+            onValueChange={(value) => {
+              if (value !== null) {
+                setLanguage(value as SubmissionLanguage);
+              }
+            }}
+            disabled={expired || submitted || isPending}
           >
             <SelectTrigger>
               <SelectValue placeholder="Choose language" />
             </SelectTrigger>
+
             <SelectContent>
-              <SelectItem value="javascript">JavaScript</SelectItem>
-              <SelectItem value="typescript">TypeScript</SelectItem>
-              <SelectItem value="python">Python</SelectItem>
-              <SelectItem value="java">Java</SelectItem>
-              <SelectItem value="cpp">C++</SelectItem>
+              <SelectItem value="javascript">
+                JavaScript
+              </SelectItem>
+
+              <SelectItem value="typescript">
+                TypeScript
+              </SelectItem>
+
+              <SelectItem value="python">
+                Python
+              </SelectItem>
+
+              <SelectItem value="java">
+                Java
+              </SelectItem>
+
+              <SelectItem value="cpp">
+                C++
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
 
+        {/* Code editor */}
         <div className="space-y-2">
-          <label className="text-sm font-medium">Your Code</label>
+          <Label className="text-sm font-medium">
+            Your Code
+          </Label>
+
           <Textarea
             value={code}
             onChange={(event) => setCode(event.target.value)}
-            disabled={expired || submitted}
+            disabled={expired || submitted || isPending}
             placeholder="// Write your solution here..."
             className="min-h-[300px] resize-y font-mono text-sm"
           />
         </div>
 
+        {/* Actions */}
         <div className="flex flex-wrap justify-end gap-2">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
+            disabled={isPending}
           >
             Close
           </Button>
 
           <Button
             onClick={handleSubmit}
-            disabled={expired || submitted || !code.trim()}
+            disabled={
+              expired ||
+              submitted ||
+              isPending ||
+              !code.trim() ||
+              startTime === null
+            }
           >
             <Send className="mr-2 h-4 w-4" />
-            {submitted ? "Submitted" : "Submit Solution"}
+
+            {isPending
+              ? "Submitting..."
+              : submitted
+                ? "Submitted"
+                : "Submit Solution"}
           </Button>
         </div>
       </DialogContent>

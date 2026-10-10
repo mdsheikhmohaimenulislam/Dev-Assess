@@ -18,6 +18,8 @@ import {
 } from "lucide-react";
 
 import { useGetSingleProblem } from "@/components/hooks/problem.hook";
+import { useSubmitProblem } from "@/components/hooks/useSubmitAnswer";
+
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,6 +29,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import Loading from "@/app/loading";
 import SolveProblemDialog from "../_components/SolveProblemDialog";
 
@@ -37,6 +40,11 @@ export default function DetailsPage() {
   const [solveDialogOpen, setSolveDialogOpen] = useState(false);
 
   const { data, isLoading, isError } = useGetSingleProblem(id);
+
+  const {
+    mutate: submitProblem,
+    isPending,
+  } = useSubmitProblem();
 
   const problem = data?.data;
 
@@ -50,7 +58,9 @@ export default function DetailsPage() {
         <div className="mx-auto max-w-5xl">
           <Card>
             <CardContent className="flex min-h-100 flex-col items-center justify-center gap-4">
-              <p className="text-lg font-medium">Problem not found</p>
+              <p className="text-lg font-medium">
+                Problem not found
+              </p>
 
               <Button>
                 <Link href="/problems">
@@ -68,7 +78,7 @@ export default function DetailsPage() {
   return (
     <div className="min-h-screen bg-muted/30 p-6">
       <div className="mx-auto max-w-5xl space-y-6">
-        {/* Back Button */}
+        {/* Back button */}
         <Button variant="outline">
           <Link href="/problems">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -76,7 +86,7 @@ export default function DetailsPage() {
           </Link>
         </Button>
 
-        {/* Problem Header */}
+        {/* Problem header */}
         <Card>
           <CardHeader className="space-y-5">
             <div className="flex flex-wrap items-center gap-2">
@@ -105,7 +115,6 @@ export default function DetailsPage() {
               </CardDescription>
             </div>
 
-            {/* Problem ID */}
             <div className="rounded-lg bg-muted p-3">
               <p className="text-xs text-muted-foreground">
                 Problem ID
@@ -118,9 +127,8 @@ export default function DetailsPage() {
           </CardHeader>
         </Card>
 
-        {/* Problem Information */}
+        {/* Problem information */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Difficulty */}
           <Card>
             <CardContent className="flex items-center gap-3 pt-6">
               <CheckCircle2 className="h-5 w-5 text-muted-foreground" />
@@ -129,12 +137,13 @@ export default function DetailsPage() {
                 <p className="text-sm text-muted-foreground">
                   Difficulty
                 </p>
-                <p className="font-medium">{problem.difficulty}</p>
+                <p className="font-medium">
+                  {problem.difficulty}
+                </p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Time Limit */}
           <Card>
             <CardContent className="flex items-center gap-3 pt-6">
               <Clock className="h-5 w-5 text-muted-foreground" />
@@ -143,12 +152,13 @@ export default function DetailsPage() {
                 <p className="text-sm text-muted-foreground">
                   Time Limit
                 </p>
-                <p className="font-medium">{problem.timeLimit} ms</p>
+                <p className="font-medium">
+                  {problem.timeLimit} ms
+                </p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Memory Limit */}
           <Card>
             <CardContent className="flex items-center gap-3 pt-6">
               <Cpu className="h-5 w-5 text-muted-foreground" />
@@ -157,12 +167,13 @@ export default function DetailsPage() {
                 <p className="text-sm text-muted-foreground">
                   Memory Limit
                 </p>
-                <p className="font-medium">{problem.memoryLimit} MB</p>
+                <p className="font-medium">
+                  {problem.memoryLimit} MB
+                </p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Category */}
           <Card>
             <CardContent className="flex items-center gap-3 pt-6">
               <Tag className="h-5 w-5 text-muted-foreground" />
@@ -171,13 +182,15 @@ export default function DetailsPage() {
                 <p className="text-sm text-muted-foreground">
                   Category
                 </p>
-                <p className="font-medium">{problem.category}</p>
+                <p className="font-medium">
+                  {problem.category}
+                </p>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Problem Description */}
+        {/* Problem description */}
         <Card>
           <CardHeader>
             <CardTitle>Problem Description</CardTitle>
@@ -193,27 +206,27 @@ export default function DetailsPage() {
           </CardContent>
         </Card>
 
-        {/* Input Format */}
+        {/* Input format */}
         <Card>
           <CardHeader>
             <CardTitle>Input Format</CardTitle>
           </CardHeader>
 
           <CardContent>
-            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7 whitespace-pre-wrap">
+            <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm leading-7">
               {problem.inputFormat}
             </pre>
           </CardContent>
         </Card>
 
-        {/* Output Format */}
+        {/* Output format */}
         <Card>
           <CardHeader>
             <CardTitle>Output Format</CardTitle>
           </CardHeader>
 
           <CardContent>
-            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7 whitespace-pre-wrap">
+            <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm leading-7">
               {problem.outputFormat}
             </pre>
           </CardContent>
@@ -226,13 +239,13 @@ export default function DetailsPage() {
           </CardHeader>
 
           <CardContent>
-            <pre className="overflow-x-auto rounded-lg bg-muted p-4 text-sm leading-7 whitespace-pre-wrap">
+            <pre className="overflow-x-auto whitespace-pre-wrap rounded-lg bg-muted p-4 text-sm leading-7">
               {problem.constraints}
             </pre>
           </CardContent>
         </Card>
 
-        {/* Created By */}
+        {/* Created by */}
         <Card>
           <CardHeader>
             <CardTitle>Created By</CardTitle>
@@ -272,7 +285,6 @@ export default function DetailsPage() {
 
           <CardContent>
             <div className="grid gap-4 sm:grid-cols-2">
-              {/* Created At */}
               <div className="flex items-center gap-3 rounded-lg bg-muted p-4">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
 
@@ -294,7 +306,6 @@ export default function DetailsPage() {
                 </div>
               </div>
 
-              {/* Updated At */}
               <div className="flex items-center gap-3 rounded-lg bg-muted p-4">
                 <Calendar className="h-5 w-5 text-muted-foreground" />
 
@@ -319,7 +330,7 @@ export default function DetailsPage() {
           </CardContent>
         </Card>
 
-        {/* Solve Problem Action */}
+        {/* Solve problem action */}
         <Card>
           <CardContent className="flex flex-col items-center justify-between gap-4 pt-6 sm:flex-row">
             <div>
@@ -332,19 +343,24 @@ export default function DetailsPage() {
               </p>
             </div>
 
-            <Button onClick={() => setSolveDialogOpen(true)}>
+            <Button
+              onClick={() => setSolveDialogOpen(true)}
+              disabled={isPending}
+            >
               <Play className="mr-2 h-4 w-4" />
               Solve Problem
             </Button>
           </CardContent>
         </Card>
 
-        {/* Solve Problem Dialog */}
+        {/* Solve problem dialog */}
         <SolveProblemDialog
           open={solveDialogOpen}
           onOpenChange={setSolveDialogOpen}
           problemId={problem.id}
           problemTitle={problem.title}
+          submitProblem={submitProblem}
+          isPending={isPending}
         />
       </div>
     </div>
